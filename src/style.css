@@ -2643,3 +2643,1110 @@ html, body {
 .channel-pct {
   color: var(--accent-gold);
 }
+
+/* ==========================================================================
+   ITEMKU TOKOKU MERCHANT DASHBOARD THEME
+   Pixel Lineage Dark Glassmorphism Tokoku
+   ========================================================================== */
+
+/* Shell Container */
+.modal-content.tokoku-container {
+  max-width: 1240px;
+  width: 95vw;
+  height: 92vh;
+  max-height: 92vh;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  background: #090414;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.95), 0 0 50px rgba(157, 78, 221, 0.15);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+/* Login Gate */
+.tokoku-login-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 24px;
+}
+.tokoku-login-card {
+  max-width: 380px;
+  width: 100%;
+  background: rgba(22, 10, 38, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 209, 102, 0.25);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  padding: 28px 24px;
+}
+
+/* Brand Logo */
+.tokoku-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.tokoku-pill-badge {
+  font-size: 10px;
+  color: #ff7a18;
+  background: rgba(255, 122, 24, 0.15);
+  border: 1px solid rgba(255, 122, 24, 0.4);
+  padding: 2px 7px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Topbar Header */
+.tokoku-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background: rgba(18, 8, 34, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-wrap: wrap;
+  gap: 12px;
+  z-index: 10;
+}
+.tokoku-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.tokoku-topbar-tag {
+  font-size: 10px;
+  color: var(--text-dim);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  padding-left: 12px;
+}
+.tokoku-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.tokoku-btn-shop {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #e2e8f0;
+  font-size: 11px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+.tokoku-btn-shop:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+}
+.tokoku-user-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.tokoku-user-avatar {
+  font-size: 16px;
+}
+.tokoku-user-info {
+  display: flex;
+  flex-direction: column;
+}
+.tokoku-user-store {
+  font-size: 11px;
+  font-weight: 700;
+  color: #f8fafc;
+}
+.tokoku-user-name {
+  font-size: 9px;
+  color: var(--text-dim);
+}
+.tokoku-btn-logout {
+  background: rgba(239, 71, 111, 0.1);
+  border: 1px solid rgba(239, 71, 111, 0.3);
+  color: var(--accent-red);
+  font-size: 10px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+.tokoku-btn-logout:hover {
+  background: rgba(239, 71, 111, 0.2);
+}
+
+/* Main Layout */
+.tokoku-main-layout {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Sidebar */
+.tokoku-sidebar {
+  width: 230px;
+  flex-shrink: 0;
+  background: rgba(14, 6, 26, 0.95);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 16px 12px;
+}
+
+/* Store Profile Card */
+.tokoku-store-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 12px;
+  margin-bottom: 16px;
+}
+.tokoku-store-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.tokoku-store-avatar {
+  width: 38px;
+  height: 38px;
+  background: rgba(255, 122, 24, 0.15);
+  border: 1px solid rgba(255, 122, 24, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.tokoku-store-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.tokoku-store-title {
+  font-size: 12px;
+  color: #f8fafc;
+  font-weight: 700;
+}
+.tokoku-status-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9px;
+  font-family: 'Silkscreen', monospace;
+  padding: 2px 7px;
+  border-radius: 3px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all var(--trans-fast);
+}
+.tokoku-status-toggle.open {
+  background: rgba(46, 196, 182, 0.15);
+  border-color: rgba(46, 196, 182, 0.4);
+  color: #2ec4b6;
+}
+.tokoku-status-toggle.closed {
+  background: rgba(239, 71, 111, 0.15);
+  border-color: rgba(239, 71, 111, 0.4);
+  color: var(--accent-red);
+}
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 6px currentColor;
+}
+.tokoku-store-scores {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 9px;
+}
+.score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.score-label {
+  color: var(--text-dim);
+}
+
+/* Nav Groups */
+.tokoku-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.tokoku-nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.tokoku-nav-group-title {
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+}
+.tokoku-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  font-size: 12px;
+  color: #94a3b8;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  position: relative;
+  transition: all var(--trans-fast);
+}
+.tokoku-nav-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: #f8fafc;
+}
+.tokoku-nav-item.active {
+  background: rgba(255, 209, 102, 0.08);
+  color: var(--accent-gold);
+  border-left: 3px solid var(--accent-gold);
+  font-weight: 600;
+}
+.nav-icon {
+  font-size: 14px;
+}
+.nav-badge-count {
+  margin-left: auto;
+  font-size: 9px;
+  font-family: 'Silkscreen', monospace;
+  background: var(--accent-orange);
+  color: #000;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 8px;
+}
+
+/* Content Area */
+.tokoku-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  background: #0b0517;
+}
+
+/* Sections */
+.tokoku-section {
+  background: rgba(22, 10, 38, 0.65);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.tokoku-section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #f8fafc;
+  margin-bottom: 4px;
+}
+.tokoku-section-subtitle {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+/* Beranda Grid */
+.tokoku-beranda-grid {
+  display: grid;
+  grid-template-columns: 1fr 310px;
+  gap: 20px;
+}
+.tokoku-beranda-left {
+  display: flex;
+  flex-direction: column;
+}
+.tokoku-beranda-right {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Aktifitas Penting (6 Cards) */
+.tokoku-activity-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.activity-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 14px;
+  transition: all var(--trans-fast);
+}
+.activity-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 209, 102, 0.3);
+  transform: translateY(-2px);
+}
+.act-title {
+  font-size: 11px;
+  color: #cbd5e1;
+  margin-bottom: 8px;
+}
+.act-val-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.act-icon {
+  font-size: 14px;
+}
+.act-count {
+  font-size: 18px;
+  font-weight: 700;
+  font-family: 'Press Start 2P', monospace;
+  color: var(--accent-gold);
+}
+
+/* Keuangan Toko */
+.tokoku-finance-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.finance-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.finance-label {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.finance-amount {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: 'Silkscreen', monospace;
+  color: #f8fafc;
+}
+.finance-amount.gold {
+  color: var(--accent-gold);
+}
+.finance-link {
+  font-size: 11px;
+  color: #38bdf8;
+  text-decoration: none;
+  font-weight: 600;
+}
+.finance-link:hover {
+  text-decoration: underline;
+}
+
+/* Performa Toko */
+.tokoku-perf-block {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 16px;
+}
+.perf-header {
+  font-size: 12px;
+  color: #f8fafc;
+  margin-bottom: 12px;
+}
+.perf-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.stat-name {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.stat-val-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.stat-val {
+  font-size: 16px;
+  font-family: 'Press Start 2P', monospace;
+  color: var(--accent-gold);
+}
+
+/* SVG Chart */
+.tokoku-chart-container {
+  margin-top: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 12px;
+}
+.tokoku-svg-chart {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Right Side Box (Informasi & Pengumuman) */
+.tokoku-side-box {
+  background: rgba(22, 10, 38, 0.65);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.side-box-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #f8fafc;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.side-feature-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.badge-feature {
+  font-size: 9px;
+  font-family: 'Silkscreen', monospace;
+  background: rgba(255, 122, 24, 0.15);
+  color: #ff9e00;
+  border: 1px solid rgba(255, 122, 24, 0.3);
+  padding: 2px 6px;
+}
+.badge-feature.green {
+  background: rgba(46, 196, 182, 0.15);
+  color: #2ec4b6;
+  border-color: rgba(46, 196, 182, 0.3);
+}
+.feature-progress-text {
+  font-size: 10px;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+.feature-progress-bar {
+  width: 100%;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  background: var(--accent-gold);
+}
+.feature-desc {
+  font-size: 10px;
+  color: var(--text-dim);
+  line-height: 1.4;
+  margin: 0;
+}
+.discord-card {
+  border-color: rgba(88, 101, 242, 0.3);
+  background: rgba(88, 101, 242, 0.08);
+}
+.discord-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #a5b4fc;
+}
+.announcement-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 0;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+}
+.ann-title {
+  font-size: 11px;
+  color: #f8fafc;
+  text-decoration: none;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.ann-title:hover {
+  color: var(--accent-gold);
+}
+.ann-date {
+  font-size: 9px;
+  color: var(--text-dim);
+  font-family: 'Silkscreen', monospace;
+}
+
+/* Orders View */
+.tokoku-orders-view {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.tokoku-view-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.tokoku-view-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+/* Filter Tabs */
+.tokoku-filter-tabs {
+  display: flex;
+  gap: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 8px;
+  overflow-x: auto;
+}
+.tokoku-filter-tab {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 11px;
+  padding: 6px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--trans-fast);
+}
+.tokoku-filter-tab:hover {
+  color: #fff;
+}
+.tokoku-filter-tab.active {
+  color: var(--accent-gold);
+  border-bottom: 2px solid var(--accent-gold);
+  font-weight: 700;
+}
+
+/* Lookup Box */
+.tokoku-lookup-box {
+  display: flex;
+  gap: 8px;
+  background: rgba(255, 209, 102, 0.05);
+  border: 1px solid rgba(255, 209, 102, 0.2);
+  padding: 10px 14px;
+}
+
+/* Order Cards */
+.tokoku-orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.tokoku-order-card {
+  background: rgba(22, 10, 38, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all var(--trans-fast);
+}
+.tokoku-order-card:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+}
+.tokoku-order-card.completed {
+  border-color: rgba(46, 196, 182, 0.3);
+  background: rgba(46, 196, 182, 0.03);
+}
+.order-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.order-id-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.order-id-badge {
+  font-size: 10px;
+  color: var(--accent-orange);
+  background: rgba(255, 122, 24, 0.1);
+  padding: 2px 6px;
+  border: 1px solid rgba(255, 122, 24, 0.3);
+}
+.order-date {
+  font-size: 10px;
+  color: var(--text-dim);
+}
+.order-ign {
+  font-size: 10px;
+  color: #cbd5e1;
+}
+.order-customer {
+  font-size: 10px;
+  color: var(--accent-gold);
+}
+.order-status-badge {
+  font-size: 9px;
+  padding: 4px 8px;
+  border-radius: 2px;
+}
+.badge-pending {
+  background: rgba(255, 122, 24, 0.2);
+  color: #ff9e00;
+  border: 1px solid rgba(255, 122, 24, 0.4);
+}
+.badge-completed {
+  background: rgba(46, 196, 182, 0.2);
+  color: #2ec4b6;
+  border: 1px solid rgba(46, 196, 182, 0.4);
+}
+.badge-cancelled {
+  background: rgba(239, 71, 111, 0.2);
+  color: var(--accent-red);
+  border: 1px solid rgba(239, 71, 111, 0.4);
+}
+.order-card-items {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.order-items-list {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.order-item-tag {
+  font-size: 11px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 3px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.order-total-block {
+  font-size: 11px;
+  color: #e2e8f0;
+}
+.order-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Action Buttons */
+.pixel-btn-action {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  padding: 7px 14px;
+  border: none;
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+.btn-complete-order {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #fff;
+  border: 1px solid #34d399;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.35);
+  font-weight: 700;
+}
+.btn-complete-order:hover {
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.6);
+  transform: translateY(-1px);
+}
+.pixel-btn-action.secondary {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #f8fafc;
+}
+.pixel-btn-action.secondary:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+.pixel-btn-action.chat {
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
+}
+.pixel-btn-action.chat:hover {
+  background: rgba(56, 189, 248, 0.25);
+}
+.pixel-btn-action.danger {
+  background: rgba(239, 71, 111, 0.15);
+  border: 1px solid rgba(239, 71, 111, 0.35);
+  color: var(--accent-red);
+}
+.pixel-btn-action.danger:hover {
+  background: rgba(239, 71, 111, 0.25);
+}
+
+/* Form Cards */
+.tokoku-form-card {
+  background: rgba(22, 10, 38, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 20px;
+}
+.form-card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #f8fafc;
+  margin-bottom: 4px;
+}
+
+/* Banner Alerts */
+.tokoku-info-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 10px 14px;
+  font-size: 11px;
+  color: #7dd3fc;
+  line-height: 1.4;
+}
+.tokoku-warning-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(255, 122, 24, 0.1);
+  border: 1px solid rgba(255, 122, 24, 0.3);
+  padding: 10px 14px;
+  font-size: 11px;
+  color: #fed7aa;
+  line-height: 1.4;
+}
+
+/* Upload Slots (Photos 1 & 2) */
+.tokoku-image-slots-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 8px;
+}
+.tokoku-upload-slot {
+  height: 110px;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.02);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--trans-fast);
+}
+.tokoku-upload-slot:hover {
+  border-color: var(--accent-gold);
+  background: rgba(255, 209, 102, 0.05);
+}
+.slot-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: #94a3b8;
+}
+.slot-plus {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent-gold);
+}
+.slot-text {
+  font-size: 10px;
+  font-family: 'Silkscreen', monospace;
+}
+.slot-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Switch */
+.tokoku-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+.tokoku-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.tokoku-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 24px;
+  transition: 0.3s;
+}
+.tokoku-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #cbd5e1;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+.tokoku-switch input:checked + .tokoku-slider {
+  background-color: #2563eb;
+  border-color: #3b82f6;
+}
+.tokoku-switch input:checked + .tokoku-slider:before {
+  transform: translateX(20px);
+  background-color: #fff;
+}
+
+/* Primary Tokoku Button */
+.tokoku-btn-primary {
+  background: #2563eb;
+  color: #fff;
+  border: 1px solid #3b82f6;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+.tokoku-btn-primary:hover {
+  background: #1d4ed8;
+  box-shadow: 0 0 16px rgba(37, 99, 235, 0.4);
+}
+
+/* Promo Banner (Photo 3) */
+.tokoku-promo-banner {
+  background: rgba(37, 99, 235, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.tokoku-banner-close {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 11px;
+  cursor: pointer;
+}
+.tokoku-banner-close:hover {
+  color: #fff;
+}
+
+/* Filter Controls Row (Photo 3) */
+.tokoku-filter-controls-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.search-input-wrap {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 4px 10px;
+  flex: 1;
+  min-width: 200px;
+}
+.search-icon {
+  font-size: 12px;
+  margin-right: 6px;
+  color: var(--text-dim);
+}
+.tokoku-search-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #f8fafc;
+  font-size: 11px;
+  width: 100%;
+}
+.tokoku-select-filter {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #f8fafc;
+  padding: 7px 12px;
+  font-size: 11px;
+  outline: none;
+  cursor: pointer;
+}
+.stock-range-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 4px 8px;
+}
+.stock-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  font-family: 'Silkscreen', monospace;
+}
+.stock-range-input {
+  width: 48px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 10px;
+  text-align: center;
+  outline: none;
+}
+
+/* Items Management Table */
+.tokoku-table-container {
+  margin-top: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(22, 10, 38, 0.6);
+  overflow-x: auto;
+}
+.tokoku-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.tokoku-table th {
+  background: rgba(14, 6, 26, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+.tokoku-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  vertical-align: middle;
+}
+.tokoku-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+.table-product-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.table-product-thumb {
+  width: 36px;
+  height: 36px;
+  image-rendering: pixelated;
+  background: #120824;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  object-fit: cover;
+}
+.table-product-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.table-product-name {
+  font-size: 12px;
+  color: #f8fafc;
+}
+.table-product-game {
+  font-size: 10px;
+  color: var(--text-dim);
+}
+.badge-stock-out {
+  display: inline-block;
+  font-size: 8px;
+  font-family: 'Silkscreen', monospace;
+  background: rgba(239, 71, 111, 0.15);
+  color: var(--accent-red);
+  border: 1px solid rgba(239, 71, 111, 0.3);
+  padding: 1px 4px;
+  width: fit-content;
+}
+.tokoku-inline-stock-input {
+  width: 60px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffd166;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  padding: 4px 6px;
+  text-align: center;
+}
+
+/* Empty Box */
+.tokoku-empty-box {
+  text-align: center;
+  padding: 40px 16px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 900px) {
+  .modal-content.tokoku-container {
+    width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+  .tokoku-main-layout {
+    flex-direction: column;
+  }
+  .tokoku-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    max-height: 160px;
+  }
+  .tokoku-nav {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+  .tokoku-nav-group {
+    flex-direction: row;
+  }
+  .tokoku-nav-group-title {
+    display: none;
+  }
+  .tokoku-beranda-grid {
+    grid-template-columns: 1fr;
+  }
+  .tokoku-activity-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .tokoku-image-slots-row {
+    grid-template-columns: 1fr;
+  }
+}
+
