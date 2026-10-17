@@ -1,12 +1,25 @@
 {
   "version": "3.0.0",
-  "updatedAt": "2026-10-17T16:56:22.015Z",
+  "updatedAt": "2026-10-17T17:03:16.027Z",
   "storeStatus": {
     "isOpen": true,
     "name": "PanzerFaust Store"
   },
-  "orders": [],
-  "chats": {},
+  "orders": [
+    {
+      "id": "ORD-123",
+      "ign": "WisemanBoss",
+      "status": "Pending"
+    }
+  ],
+  "chats": {
+    "ORD-123": [
+      {
+        "sender": "Customer",
+        "text": "Halo Boss"
+      }
+    ]
+  },
   "reviews": [
     {
       "id": "rev-1",

@@ -1,7 +1,8 @@
 // =============================================================================
-// PIXEL LINEAGE - LOCAL LAPTOP DATABASE SERVER
+// PIXEL LINEAGE - LOCAL LAPTOP DATABASE BACKGROUND SERVICE
 // File: server/local_db.js
 // Storage Path: data/store_database.json (Tersimpan fisik di hard disk laptop Boss)
+// Log Path    : logs/storage_service.log
 // =============================================================================
 
 import http from 'http';
@@ -14,15 +15,29 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.resolve(__dirname, '..');
 const DATA_DIR = path.join(ROOT_DIR, 'data');
+const LOGS_DIR = path.join(ROOT_DIR, 'logs');
 const DB_FILE = path.join(DATA_DIR, 'store_database.json');
+const LOG_FILE = path.join(LOGS_DIR, 'storage_service.log');
 const PORT = process.env.PORT || 8080;
 
 const CLOUD_STATE_ID = 'ff808181a09d98f701a14ab3f8790390';
 const CLOUD_API_URL = `https://api.restful-api.dev/objects/${CLOUD_STATE_ID}`;
 
-// Ensure data folder exists
+// Ensure data and logs folders exist
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
+}
+if (!fs.existsSync(LOGS_DIR)) {
+  fs.mkdirSync(LOGS_DIR, { recursive: true });
+}
+
+function writeLog(msg) {
+  const time = new Date().toLocaleString('id-ID');
+  const line = `[${time}] ${msg}\n`;
+  console.log(msg);
+  try {
+    fs.appendFileSync(LOG_FILE, line, 'utf-8');
+  } catch {}
 }
 
 // Default initial state if file doesn't exist yet
@@ -67,13 +82,13 @@ function loadStateFromDisk() {
         chats: parsed.chats && typeof parsed.chats === 'object' ? parsed.chats : {},
         reviews: Array.isArray(parsed.reviews) ? parsed.reviews : []
       };
-      console.log(`[DISK] Database berhasil dimuat dari: ${DB_FILE}`);
+      writeLog(`[DISK] Database berhasil dimuat dari: ${DB_FILE}`);
     } else {
       saveStateToDisk();
-      console.log(`[DISK] Database baru dibuat di: ${DB_FILE}`);
+      writeLog(`[DISK] Database baru dibuat di: ${DB_FILE}`);
     }
   } catch (err) {
-    console.error(`[DISK ERROR] Gagal membaca ${DB_FILE}:`, err.message);
+    writeLog(`[DISK ERROR] Gagal membaca ${DB_FILE}: ${err.message}`);
   }
 }
 
@@ -83,7 +98,7 @@ function saveStateToDisk() {
     fs.writeFileSync(DB_FILE, JSON.stringify(localDbState, null, 2), 'utf-8');
     return true;
   } catch (err) {
-    console.error(`[DISK ERROR] Gagal menulis ke ${DB_FILE}:`, err.message);
+    writeLog(`[DISK ERROR] Gagal menulis ke ${DB_FILE}: ${err.message}`);
     return false;
   }
 }
@@ -97,7 +112,7 @@ fs.watch(DB_FILE, (eventType) => {
     if (!fsTimeout) {
       fsTimeout = setTimeout(() => {
         fsTimeout = null;
-        console.log('[DISK WATCH] Perubahan terdeteksi pada file lokal, menyinkronkan memori...');
+        writeLog('[DISK WATCH] Perubahan terdeteksi pada file lokal, menyinkronkan memori...');
         loadStateFromDisk();
         pushToCloudRelay();
         broadcastWebSocket({ type: 'database_reloaded', data: localDbState });
@@ -125,8 +140,9 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     return res.end(JSON.stringify({
       status: 'online',
-      server: 'Pixel Lineage Local Laptop Database',
+      server: 'Pixel Lineage Local Laptop Database Background Service',
       filePath: DB_FILE,
+      logPath: LOG_FILE,
       ordersCount: localDbState.orders.length,
       chatsTicketsCount: Object.keys(localDbState.chats).length,
       time: new Date().toISOString()
@@ -154,7 +170,7 @@ const server = http.createServer((req, res) => {
           if (!exists) {
             localDbState.orders.unshift(payload);
             modified = true;
-            console.log(`[PESANAN BARU MASUK KE LAPTOP]: #${payload.id} dari ${payload.customerId} (IGN: ${payload.ign})`);
+            writeLog(`[PESANAN BARU MASUK KE LAPTOP]: #${payload.id} dari ${payload.customerId} (IGN: ${payload.ign})`);
           }
         } else if (action === 'complete_order' && payload) {
           const target = localDbState.orders.find(o => o.id === payload.orderId);
@@ -162,14 +178,14 @@ const server = http.createServer((req, res) => {
             target.status = 'Completed';
             target.completedAt = new Date().toLocaleString('id-ID');
             modified = true;
-            console.log(`[PESANAN SELESAI DI LAPTOP]: #${payload.orderId}`);
+            writeLog(`[PESANAN SELESAI DI LAPTOP]: #${payload.orderId}`);
           }
         } else if (action === 'update_status' && payload) {
           const target = localDbState.orders.find(o => o.id === payload.orderId);
           if (target) {
             target.status = payload.status;
             modified = true;
-            console.log(`[STATUS DIUBAH DI LAPTOP]: #${payload.orderId} -> ${payload.status}`);
+            writeLog(`[STATUS DIUBAH DI LAPTOP]: #${payload.orderId} -> ${payload.status}`);
           }
         } else if (action === 'send_chat' && payload) {
           const { orderId, message } = payload;
@@ -178,14 +194,14 @@ const server = http.createServer((req, res) => {
           if (!exists) {
             localDbState.chats[orderId].push(message);
             modified = true;
-            console.log(`[CHAT BARU MASUK KE LAPTOP]: Tiket #${orderId} - ${message.sender}: "${message.text}"`);
+            writeLog(`[CHAT BARU MASUK KE LAPTOP]: Tiket #${orderId} - ${message.sender}: "${message.text}"`);
           }
         } else if (action === 'create_review' && payload) {
           const exists = localDbState.reviews.some(r => r.id === payload.id);
           if (!exists) {
             localDbState.reviews.unshift(payload);
             modified = true;
-            console.log(`[ULASAN BARU MASUK KE LAPTOP]: ${payload.rating} Bintang dari ${payload.customerId}`);
+            writeLog(`[ULASAN BARU MASUK KE LAPTOP]: ${payload.rating} Bintang dari ${payload.customerId}`);
           }
         }
 
@@ -209,6 +225,16 @@ const server = http.createServer((req, res) => {
   res.end(JSON.stringify({ error: 'Endpoint not found' }));
 });
 
+// Single instance port collision protection
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    writeLog(`[INFO] Port ${PORT} sudah digunakan oleh service yang berjalan. Service background sudah aktif.`);
+    process.exit(0);
+  } else {
+    writeLog(`[ERROR SERVER] ${err.message}`);
+  }
+});
+
 // Setup WebSocket Server for Real-Time 0-Latency Push
 const wss = new WebSocketServer({ server, path: '/ws' });
 
@@ -219,8 +245,7 @@ wss.on('connection', (ws) => {
     try {
       const msg = JSON.parse(messageRaw);
       if (msg.action) {
-        // Trigger action locally
-        console.log(`[WS ACTION DARI CLIENT]: ${msg.action}`);
+        writeLog(`[WS ACTION DARI CLIENT]: ${msg.action}`);
       }
     } catch {
       // Ignored
@@ -255,7 +280,7 @@ async function syncFromCloudRelay() {
         if (!local) {
           localDbState.orders.unshift(ro);
           changed = true;
-          console.log(`[SINKRONISASI AWAN KE LAPTOP]: Pesanan #${ro.id} berhasil diunduh dan disimpan ke hard disk laptop!`);
+          writeLog(`[SINKRONISASI AWAN KE LAPTOP]: Pesanan #${ro.id} berhasil diunduh dan disimpan ke hard disk laptop!`);
         } else if (local.status !== ro.status) {
           local.status = ro.status;
           changed = true;
@@ -319,15 +344,16 @@ async function pushToCloudRelay() {
 
 // Start Server
 server.listen(PORT, () => {
-  console.log('=============================================================================');
-  console.log('⚔️  PIXEL LINEAGE - LOCAL LAPTOP DATABASE SERVER AKTIF ⚔️');
-  console.log('=============================================================================');
-  console.log(`Lokasi Penyimpanan Fisik : ${DB_FILE}`);
-  console.log(`HTTP Local Endpoint      : http://localhost:${PORT}/api/state`);
-  console.log(`WebSocket Endpoint       : ws://localhost:${PORT}/ws`);
-  console.log(`Status Real-Time         : Otomatis sinkron 2 arah dengan Vercel Web & HP Pembeli`);
-  console.log('=============================================================================');
-  console.log('Menunggu pesanan atau pesan chat baru dari pembeli...');
+  writeLog('=============================================================================');
+  writeLog('⚔️  PIXEL LINEAGE - LOCAL LAPTOP DATABASE BACKGROUND SERVICE AKTIF ⚔️');
+  writeLog('=============================================================================');
+  writeLog(`Lokasi Penyimpanan Fisik : ${DB_FILE}`);
+  writeLog(`Lokasi File Log Aktivitas: ${LOG_FILE}`);
+  writeLog(`HTTP Local Endpoint      : http://localhost:${PORT}/api/state`);
+  writeLog(`WebSocket Endpoint       : ws://localhost:${PORT}/ws`);
+  writeLog(`Status Real-Time         : Otomatis sinkron 2 arah dengan Vercel Web & HP Pembeli`);
+  writeLog('=============================================================================');
+  writeLog('Service siap di background. Menunggu pesanan atau pesan chat baru dari pembeli...');
 
   // Start polling sync loop
   setInterval(syncFromCloudRelay, 3000);
