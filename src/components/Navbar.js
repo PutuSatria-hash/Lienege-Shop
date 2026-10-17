@@ -104,11 +104,6 @@ export function renderNavbar(container, callbacks) {
           <span style="color: #ff9e00;">💬 LIVE CHAT</span>
         </button>
 
-        <!-- My Orders Button -->
-        <button id="btn-order-history" class="icon-btn font-silkscreen" title="View My Orders">
-          <span>📜 MY ORDERS</span>
-        </button>
-
         <!-- Wishlist Nav Button -->
         <button id="btn-open-wishlist" class="icon-btn font-silkscreen wish-nav-btn" title="Saved Build & Wishlist (Press W)">
           <span>🤍 WISHLIST</span>
@@ -124,24 +119,12 @@ export function renderNavbar(container, callbacks) {
     </header>
   `;
 
-  // Secret Admin Access via Triple-Click Logo or Ctrl+Shift+A
-  let logoClicks = 0;
-  let logoClickTimer = null;
+  // Brand Logo Click - gentle pixel chime sound only (no admin trigger for safety)
   const logoTrigger = container.querySelector('#brand-logo-trigger');
   if (logoTrigger) {
     logoTrigger.addEventListener('click', () => {
-      logoClicks++;
-      clearTimeout(logoClickTimer);
-      if (logoClicks >= 3) {
-        logoClicks = 0;
-        sound.playFanfare();
-        showToast('Secret Admin Panel Activated', 'info');
-        if (callbacks.onOpenBoss) callbacks.onOpenBoss();
-      } else {
-        logoClickTimer = setTimeout(() => {
-          logoClicks = 0;
-        }, 1200);
-      }
+      sound.playClick();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
 
@@ -299,13 +282,6 @@ export function renderNavbar(container, callbacks) {
   btnPublicChat.addEventListener('click', () => {
     sound.playClick();
     if (callbacks.onOpenPublicChat) callbacks.onOpenPublicChat();
-  });
-
-  // Orders and Cart
-  const btnHistory = container.querySelector('#btn-order-history');
-  btnHistory.addEventListener('click', () => {
-    sound.playClick();
-    if (callbacks.onOpenHistory) callbacks.onOpenHistory();
   });
 
   // Wishlist Nav Button

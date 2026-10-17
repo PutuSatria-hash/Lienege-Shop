@@ -20,6 +20,7 @@ import { renderReviewsShowcase } from './components/ReviewsShowcase.js';
 import { initScenery } from './utils/sceneryManager.js';
 import { initClickSparkles } from './utils/sparkles.js';
 import { bgm } from './utils/bgm.js';
+import { initFloatingOrders } from './components/FloatingOrders.js';
 
 // 1. Initialize Canvas Background, Ambient Scenery, Tavern BGM & Sparkles
 const canvas = document.getElementById('bg-canvas');
@@ -38,6 +39,7 @@ initOtherGamesModal();
 initItemInspectModal();
 initWishlistModal();
 initNpcGuide();
+initFloatingOrders(() => openOrders());
 
 const settings = storage.getSettings();
 

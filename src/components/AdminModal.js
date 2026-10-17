@@ -81,57 +81,83 @@ function renderAdminContent() {
 
   const settings = storage.getSettings();
 
-  // 1. PIN Gate if not authenticated
+  let currentAdmin = storage.getCurrentAdmin();
+  if (currentAdmin) {
+    isAuthenticated = true;
+  }
+
+  // 1. Multi-Admin Account Login Gate if not authenticated
   if (!isAuthenticated) {
     body.innerHTML = `
-      <div style="text-align: center; padding: 36px 12px;">
-        <div style="font-size: 40px; margin-bottom: 14px;">🛡️</div>
-        <h4 class="font-pixel" style="font-size: 13px; color: var(--accent-orange); margin-bottom: 8px;">
-          BOSS ACCESS VERIFICATION
+      <div style="text-align: center; padding: 28px 12px; max-width: 360px; margin: 0 auto;">
+        <div style="font-size: 38px; margin-bottom: 12px;">🛡️</div>
+        <h4 class="font-pixel" style="font-size: 12px; color: var(--accent-orange); margin-bottom: 8px;">
+          ADMIN SYSTEM ACCESS
         </h4>
-        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 24px;">
-          Enter your security PIN to access the Admin Management Dashboard.
+        <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;">
+          Login with your registered administrator credentials to access the shop controls.
         </p>
 
-        <div style="max-width: 240px; margin: 0 auto 20px;">
-          <input 
-            type="password" 
-            id="admin-pin-input" 
-            class="pixel-input" 
-            placeholder="PIN (Default: 2026)" 
-            maxlength="8" 
-            style="text-align: center; font-size: 20px; letter-spacing: 5px;"
-          />
-        </div>
+        <form id="form-admin-login" style="display: flex; flex-direction: column; gap: 12px; text-align: left;">
+          <div>
+            <label class="form-label font-silkscreen">Admin Username</label>
+            <input 
+              type="text" 
+              id="admin-user-input" 
+              class="pixel-input" 
+              placeholder="e.g. admin or boss" 
+              required
+              autocomplete="username"
+            />
+          </div>
 
-        <button class="pixel-btn" id="btn-submit-pin" style="padding: 12px 24px;">
-          UNLOCK DASHBOARD
-        </button>
+          <div>
+            <label class="form-label font-silkscreen">Password</label>
+            <input 
+              type="password" 
+              id="admin-pass-input" 
+              class="pixel-input" 
+              placeholder="Enter password" 
+              required
+              autocomplete="current-password"
+            />
+          </div>
+
+          <div style="font-size: 9px; color: var(--text-dim); background: rgba(0,0,0,0.3); padding: 8px; border: 1px dashed rgba(255,255,255,0.1);" class="font-silkscreen">
+            Default Master: <span style="color: var(--accent-gold);">admin / wiseman2026</span> or <span style="color: var(--accent-gold);">boss / lineage2026</span>
+          </div>
+
+          <button type="submit" class="pixel-btn gold" id="btn-submit-login" style="padding: 12px 18px; margin-top: 6px;">
+            👑 UNLOCK DASHBOARD
+          </button>
+        </form>
       </div>
     `;
 
-    const pinInput = body.querySelector('#admin-pin-input');
-    const submitBtn = body.querySelector('#btn-submit-pin');
+    const form = body.querySelector('#form-admin-login');
+    const userInput = body.querySelector('#admin-user-input');
+    const passInput = body.querySelector('#admin-pass-input');
 
-    const handleAuth = () => {
-      if (pinInput.value.trim() === (settings.adminPin || '2026')) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const u = userInput.value.trim();
+      const p = passInput.value.trim();
+
+      const admin = storage.authenticateAdmin(u, p);
+      if (admin) {
         sound.playFanfare();
         isAuthenticated = true;
-        showToast('Welcome back, Boss!', 'success');
+        showToast(`Welcome back, ${admin.name}!`, 'success');
         renderAdminContent();
       } else {
         sound.playRemove();
-        showToast('Incorrect PIN! Try again.', 'warning');
-        pinInput.value = '';
-        pinInput.focus();
+        showToast('Invalid Username or Password!', 'warning');
+        passInput.value = '';
+        passInput.focus();
       }
-    };
-
-    submitBtn.addEventListener('click', handleAuth);
-    pinInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') handleAuth();
     });
-    setTimeout(() => pinInput.focus(), 150);
+
+    setTimeout(() => userInput.focus(), 150);
     return;
   }
 
@@ -139,8 +165,22 @@ function renderAdminContent() {
   const categories = storage.getCategories();
   const items = storage.getItems();
   const orders = storage.getOrders();
+  const adminAccounts = storage.getAdminAccounts();
 
   body.innerHTML = `
+    <!-- Top Admin Status & Logout Bar -->
+    <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255, 122, 24, 0.12); border: 1px solid rgba(255, 122, 24, 0.3); padding: 8px 14px; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 14px;">👑</span>
+        <span class="font-silkscreen" style="font-size: 10px; color: var(--accent-gold);">
+          LOGGED IN: <strong>${currentAdmin ? currentAdmin.name : 'Master Admin'}</strong> (${currentAdmin ? currentAdmin.role : 'Admin'})
+        </span>
+      </div>
+      <button class="pixel-btn-tiny secondary font-silkscreen" id="btn-admin-logout" style="padding: 4px 10px; font-size: 8px;" title="Sign out of Admin Session">
+        LOGOUT ✕
+      </button>
+    </div>
+
     <!-- Admin Navigation Tabs -->
     <div style="display: flex; gap: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; margin-bottom: 20px; flex-wrap: wrap;">
       <button class="pixel-btn ${activeAdminTab === 'inbox-orders' ? '' : 'secondary'}" id="tab-btn-inbox" style="font-size: 8px; padding: 8px 10px;">
@@ -155,6 +195,9 @@ function renderAdminContent() {
       <button class="pixel-btn ${activeAdminTab === 'manage-items' ? '' : 'secondary'}" id="tab-btn-manage" style="font-size: 8px; padding: 8px 10px;">
         MANAGE ITEMS (${items.length})
       </button>
+      <button class="pixel-btn ${activeAdminTab === 'admin-accounts' ? '' : 'secondary'}" id="tab-btn-admins" style="font-size: 8px; padding: 8px 10px;">
+        👥 ADMINS (${adminAccounts.length})
+      </button>
       <button class="pixel-btn ${activeAdminTab === 'settings' ? '' : 'secondary'}" id="tab-btn-settings" style="font-size: 8px; padding: 8px 10px;">
         ⚙️ SETTINGS
       </button>
@@ -163,6 +206,18 @@ function renderAdminContent() {
     <!-- Tab Content Body -->
     <div id="admin-tab-content"></div>
   `;
+
+  // Attach logout handler
+  const btnLogout = body.querySelector('#btn-admin-logout');
+  if (btnLogout) {
+    btnLogout.addEventListener('click', () => {
+      sound.playClick();
+      storage.logoutAdmin();
+      isAuthenticated = false;
+      showToast('Logged out of Admin Portal', 'info');
+      renderAdminContent();
+    });
+  }
 
   // Attach tab triggers
   body.querySelector('#tab-btn-inbox').addEventListener('click', () => {
@@ -185,6 +240,11 @@ function renderAdminContent() {
     activeAdminTab = 'manage-items';
     renderAdminContent();
   });
+  body.querySelector('#tab-btn-admins').addEventListener('click', () => {
+    sound.playClick();
+    activeAdminTab = 'admin-accounts';
+    renderAdminContent();
+  });
   body.querySelector('#tab-btn-settings').addEventListener('click', () => {
     sound.playClick();
     activeAdminTab = 'settings';
@@ -199,17 +259,48 @@ function renderAdminContent() {
     const chatTicketIds = Object.keys(allChats);
     const inquiryTicketIds = chatTicketIds.filter(id => id.startsWith('INQUIRY-'));
 
+    const lookupHeaderHtml = `
+      <div style="background: rgba(255, 209, 102, 0.08); border: 1px solid rgba(255, 209, 102, 0.25); padding: 12px 14px; margin-bottom: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+          <div class="font-pixel" style="font-size: 9px; color: var(--accent-gold);">
+            📥 DISCORD TICKET & CUSTOMER LIVE CHAT LOOKUP
+          </div>
+          <button class="pixel-btn-tiny secondary font-silkscreen" id="btn-admin-refresh-orders" style="padding: 4px 8px; font-size: 8px;">
+            🔄 REFRESH
+          </button>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <input 
+            type="text" 
+            id="admin-ticket-lookup-input" 
+            class="pixel-input" 
+            placeholder="Paste Ticket ID e.g. INQUIRY-945798334 or ORD-..." 
+            style="flex: 1; min-width: 220px; font-size: 11px;" 
+          />
+          <button class="pixel-btn gold" id="btn-open-ticket-lookup" style="font-size: 8px; padding: 8px 14px;">
+            OPEN CHAT 💬
+          </button>
+        </div>
+        <div class="font-silkscreen" style="font-size: 9px; color: var(--text-dim); margin-top: 6px;">
+          Tip: Got a notification on Discord? Paste the Ticket / Order ID here to view details and chat with the customer.
+        </div>
+      </div>
+    `;
+
     if (orders.length === 0 && inquiryTicketIds.length === 0) {
       tabContent.innerHTML = `
-        <div style="text-align: center; padding: 40px 10px; color: var(--text-muted);">
+        ${lookupHeaderHtml}
+        <div style="text-align: center; padding: 32px 10px; color: var(--text-muted); background: rgba(0,0,0,0.2); border: 1px dashed rgba(255,255,255,0.08);">
           <p class="font-silkscreen" style="font-size: 12px; color: var(--accent-orange); margin-bottom: 6px;">
             No customer orders or inquiries yet.
           </p>
-          <p style="font-size: 12px;">Customer orders and real-time support chat inquiries will appear here.</p>
+          <p style="font-size: 11px; max-width: 440px; margin: 0 auto;">
+            When customers place orders or message you, they will appear here. You can also paste ticket IDs from Discord above to chat immediately.
+          </p>
         </div>
       `;
     } else {
-      let html = `<div style="display: flex; flex-direction: column; gap: 10px; max-height: 420px; overflow-y: auto; padding-right: 4px;">`;
+      let html = lookupHeaderHtml + `<div style="display: flex; flex-direction: column; gap: 10px; max-height: 420px; overflow-y: auto; padding-right: 4px;">`;
 
       // 1. General Inquiries
       inquiryTicketIds.forEach(tId => {
@@ -299,6 +390,39 @@ function renderAdminContent() {
           closeAdmin();
           openChat(id, true);
         });
+      });
+    }
+
+    // Attach Discord Ticket Lookup handler
+    const btnLookup = tabContent.querySelector('#btn-open-ticket-lookup');
+    const inputLookup = tabContent.querySelector('#admin-ticket-lookup-input');
+    const handleTicketOpen = () => {
+      const raw = inputLookup ? inputLookup.value.trim() : '';
+      if (!raw) {
+        showToast('Please paste a Ticket or Order ID first!', 'warning');
+        return;
+      }
+      const cleanId = raw.replace(/^#/, '').trim();
+      sound.playClick();
+      closeAdmin();
+      openChat(cleanId, true);
+    };
+
+    if (btnLookup) {
+      btnLookup.addEventListener('click', handleTicketOpen);
+    }
+    if (inputLookup) {
+      inputLookup.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') handleTicketOpen();
+      });
+    }
+
+    const btnRefresh = tabContent.querySelector('#btn-admin-refresh-orders');
+    if (btnRefresh) {
+      btnRefresh.addEventListener('click', () => {
+        sound.playClick();
+        showToast('Refreshing inbox...', 'info');
+        renderAdminContent();
       });
     }
   }
@@ -648,6 +772,132 @@ function renderAdminContent() {
         showToast('Reset to default complete!', 'success');
         renderAdminContent();
       }
+    });
+  }
+
+  // --- TAB 5: MULTI-ADMIN ACCOUNTS MANAGEMENT ---
+  else if (activeAdminTab === 'admin-accounts') {
+    const admins = storage.getAdminAccounts();
+
+    tabContent.innerHTML = `
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <!-- Register New Admin Form -->
+        <div style="background: rgba(255, 209, 102, 0.06); border: 1px solid rgba(255, 209, 102, 0.25); padding: 16px;">
+          <h4 class="font-pixel" style="font-size: 11px; color: var(--accent-gold); margin-bottom: 12px;">
+            + CREATE NEW ADMIN ACCOUNT
+          </h4>
+          <form id="form-create-admin" style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div>
+                <label class="form-label font-silkscreen">Username *</label>
+                <input type="text" id="new-admin-user" class="pixel-input" placeholder="e.g. staff_alfin" required autocomplete="off" />
+              </div>
+              <div>
+                <label class="form-label font-silkscreen">Password *</label>
+                <input type="password" id="new-admin-pass" class="pixel-input" placeholder="Min 6 characters" required autocomplete="new-password" />
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div>
+                <label class="form-label font-silkscreen">Display Name *</label>
+                <input type="text" id="new-admin-name" class="pixel-input" placeholder="e.g. Admin Alfin" required />
+              </div>
+              <div>
+                <label class="form-label font-silkscreen">Admin Role *</label>
+                <select id="new-admin-role" class="pixel-input" style="cursor: pointer;">
+                  <option value="Staff Admin">Staff Admin (General)</option>
+                  <option value="Trade Specialist">Trade Specialist (In-Game)</option>
+                  <option value="Support Agent">Support Agent (Chat Only)</option>
+                  <option value="Super Admin">Super Admin (Full Access)</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 4px;">
+              <button type="submit" class="pixel-btn gold" style="font-size: 8px; padding: 10px 18px;">
+                + SAVE ADMIN ACCOUNT
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Active Administrators List -->
+        <div>
+          <h4 class="font-pixel" style="font-size: 11px; color: var(--accent-orange); margin-bottom: 12px;">
+            ACTIVE ADMINISTRATORS (${admins.length})
+          </h4>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            ${admins.map(adm => `
+              <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 14px;">🛡️</span>
+                    <span class="font-silkscreen" style="font-size: 11px; color: var(--text-main); font-weight: 700;">
+                      ${adm.name}
+                    </span>
+                    <span class="rarity-badge font-silkscreen" style="font-size: 7px; background: rgba(255, 122, 24, 0.2); color: #ff9e00;">
+                      ${adm.role}
+                    </span>
+                  </div>
+                  <div class="font-silkscreen" style="font-size: 9px; color: var(--text-muted); margin-top: 4px;">
+                    Username: <span style="color: var(--accent-gold);">${adm.username}</span> • Added: ${adm.createdAt || 'Default'}
+                  </div>
+                </div>
+
+                <div>
+                  ${(adm.username === 'admin' || adm.username === 'boss') ? `
+                    <span class="font-silkscreen" style="font-size: 8px; color: var(--text-dim); padding: 4px 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                      MASTER
+                    </span>
+                  ` : `
+                    <button class="pixel-btn-tiny danger btn-delete-admin" data-id="${adm.id}" style="font-size: 8px; padding: 4px 8px;">
+                      DELETE
+                    </button>
+                  `}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+
+    const form = tabContent.querySelector('#form-create-admin');
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = tabContent.querySelector('#new-admin-user').value.trim();
+        const password = tabContent.querySelector('#new-admin-pass').value.trim();
+        const name = tabContent.querySelector('#new-admin-name').value.trim();
+        const role = tabContent.querySelector('#new-admin-role').value;
+
+        try {
+          storage.addAdminAccount({ username, password, name, role });
+          sound.playFanfare();
+          showToast(`Admin account "${username}" created!`, 'success');
+          renderAdminContent();
+        } catch (err) {
+          sound.playRemove();
+          showToast(err.message, 'warning');
+        }
+      });
+    }
+
+    tabContent.querySelectorAll('.btn-delete-admin').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-id');
+        if (confirm('Are you sure you want to delete this admin account?')) {
+          try {
+            storage.deleteAdminAccount(id);
+            sound.playRemove();
+            showToast('Admin account removed', 'info');
+            renderAdminContent();
+          } catch (err) {
+            showToast(err.message, 'warning');
+          }
+        }
+      });
     });
   }
 }

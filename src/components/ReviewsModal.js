@@ -78,6 +78,9 @@ function renderReviewsContent() {
     ? (reviews.reduce((sum, r) => sum + (r.rating || 5), 0) / reviews.length).toFixed(1)
     : '5.0';
 
+  const hasPurchased = storage.hasAnyPurchasedOrder();
+  const purchasedItems = storage.getCustomerPurchasedItems();
+
   body.innerHTML = `
     <!-- Top Stats Scorecard -->
     <div style="background: rgba(255, 209, 102, 0.08); border: 1px solid rgba(255, 209, 102, 0.25); padding: 14px 18px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
@@ -90,50 +93,67 @@ function renderReviewsContent() {
           Based on ${reviews.length} Verified Buyer Testimonials
         </div>
       </div>
-      <button id="btn-toggle-write-review" class="pixel-btn gold" style="font-size: 8px; padding: 8px 14px;">
-        ✍️ WRITE A REVIEW
-      </button>
+      ${hasPurchased ? `
+        <button id="btn-toggle-write-review" class="pixel-btn gold" style="font-size: 8px; padding: 8px 14px;">
+          ✍️ WRITE A REVIEW
+        </button>
+      ` : `
+        <div class="verified-buyer-locked font-silkscreen" style="background: rgba(255,255,255,0.06); border: 1px dashed rgba(255,255,255,0.2); padding: 8px 12px; font-size: 9px; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
+          <span>🔒</span>
+          <span>VERIFIED BUYERS ONLY (READ-ONLY)</span>
+        </div>
+      `}
     </div>
 
-    <!-- Collapsible Write Review Form -->
-    <div id="review-form-container" style="display: ${prefilledItemName ? 'block' : 'none'}; background: rgba(0,0,0,0.4); border: 1px solid rgba(255, 122, 24, 0.35); padding: 16px; margin-bottom: 22px;">
-      <h4 class="font-pixel" style="font-size: 10px; color: var(--accent-orange); margin-bottom: 12px;">
-        SUBMIT VERIFIED REVIEW
-      </h4>
+    ${!hasPurchased ? `
+      <div style="background: rgba(157, 78, 221, 0.12); border: 1px solid rgba(157, 78, 221, 0.35); padding: 12px 14px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 18px;">🛡️</span>
+        <div style="font-size: 11px; color: #e2d9f3; line-height: 1.4;">
+          <strong>Verified Buyers Only:</strong> You cannot submit ratings or reviews without completing an item order. You can view all real community trades below!
+        </div>
+      </div>
+    ` : ''}
 
-      <form id="form-submit-review">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
-          <div>
-            <label class="form-label font-silkscreen">Reviewer (Your ID)</label>
-            <input type="text" class="pixel-input" value="${customerId}" disabled style="opacity: 0.8; cursor: not-allowed;" />
+    <!-- Collapsible Write Review Form (Verified Buyers Only) -->
+    ${hasPurchased ? `
+      <div id="review-form-container" style="display: ${prefilledItemName ? 'block' : 'none'}; background: rgba(0,0,0,0.4); border: 1px solid rgba(255, 122, 24, 0.35); padding: 16px; margin-bottom: 22px;">
+        <h4 class="font-pixel" style="font-size: 10px; color: var(--accent-orange); margin-bottom: 12px;">
+          SUBMIT VERIFIED BUYER REVIEW
+        </h4>
+
+        <form id="form-submit-review">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+            <div>
+              <label class="form-label font-silkscreen">Reviewer (Your ID)</label>
+              <input type="text" class="pixel-input" value="${customerId}" disabled style="opacity: 0.8; cursor: not-allowed;" />
+            </div>
+            <div>
+              <label class="form-label font-silkscreen">Item You Purchased *</label>
+              <select id="review-item-select" class="pixel-input" style="cursor: pointer;">
+                ${purchasedItems.map(name => `
+                  <option value="${name}" ${name === prefilledItemName ? 'selected' : ''}>
+                    ${name}
+                  </option>
+                `).join('')}
+                ${purchasedItems.length === 0 ? `<option value="General Lineage Trade">General Lineage Trade</option>` : ''}
+              </select>
+            </div>
           </div>
-          <div>
-            <label class="form-label font-silkscreen">Item Purchased *</label>
-            <select id="review-item-select" class="pixel-input" style="cursor: pointer;">
-              ${items.map(it => `
-                <option value="${it.name}" ${it.name === prefilledItemName ? 'selected' : ''}>
-                  ${it.name}
-                </option>
+
+          <!-- Star Rating Picker -->
+          <div style="margin-bottom: 14px;">
+            <label class="form-label font-silkscreen">Rating *</label>
+            <div style="display: flex; gap: 8px;" id="star-picker">
+              ${[1, 2, 3, 4, 5].map(star => `
+                <button type="button" class="star-btn ${star <= activeRatingStars ? 'active' : ''}" data-val="${star}" style="background: none; border: none; font-size: 22px; cursor: pointer; transition: transform 0.15s;">
+                  ⭐
+                </button>
               `).join('')}
-              <option value="General Lineage Trade" ${!prefilledItemName ? 'selected' : ''}>General Lineage Trade</option>
-            </select>
+              <span class="font-silkscreen" id="star-label" style="font-size: 11px; color: var(--accent-gold); align-self: center; margin-left: 8px;">
+                5 / 5 Stars
+              </span>
+            </div>
           </div>
-        </div>
-
-        <!-- Star Rating Picker -->
-        <div style="margin-bottom: 14px;">
-          <label class="form-label font-silkscreen">Rating *</label>
-          <div style="display: flex; gap: 8px;" id="star-picker">
-            ${[1, 2, 3, 4, 5].map(star => `
-              <button type="button" class="star-btn ${star <= activeRatingStars ? 'active' : ''}" data-val="${star}" style="background: none; border: none; font-size: 22px; cursor: pointer; transition: transform 0.15s;">
-                ⭐
-              </button>
-            `).join('')}
-            <span class="font-silkscreen" id="star-label" style="font-size: 11px; color: var(--accent-gold); align-self: center; margin-left: 8px;">
-              5 / 5 Stars
-            </span>
-          </div>
-        </div>
 
         <div class="form-group">
           <label class="form-label font-silkscreen">Your Feedback & Experience *</label>
@@ -152,6 +172,7 @@ function renderReviewsContent() {
         </div>
       </form>
     </div>
+    ` : ''}
 
     <!-- Reviews Stream List -->
     <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -182,17 +203,19 @@ function renderReviewsContent() {
     </div>
   `;
 
-  // Toggle write review form
+  // Toggle write review form (if available for verified buyer)
   const btnToggleForm = body.querySelector('#btn-toggle-write-review');
   const formContainer = body.querySelector('#review-form-container');
-  btnToggleForm.addEventListener('click', () => {
-    sound.playClick();
-    const isHidden = formContainer.style.display === 'none';
-    formContainer.style.display = isHidden ? 'block' : 'none';
-  });
+  if (btnToggleForm && formContainer) {
+    btnToggleForm.addEventListener('click', () => {
+      sound.playClick();
+      const isHidden = formContainer.style.display === 'none';
+      formContainer.style.display = isHidden ? 'block' : 'none';
+    });
+  }
 
   const btnCancel = body.querySelector('#btn-cancel-review');
-  if (btnCancel) {
+  if (btnCancel && formContainer) {
     btnCancel.addEventListener('click', () => {
       sound.playClick();
       formContainer.style.display = 'none';
@@ -217,31 +240,33 @@ function renderReviewsContent() {
 
   // Submit Review Handler
   const form = body.querySelector('#form-submit-review');
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const itemSelect = body.querySelector('#review-item-select');
-    const commentEl = body.querySelector('#review-comment-text');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const itemSelect = body.querySelector('#review-item-select');
+      const commentEl = body.querySelector('#review-comment-text');
 
-    const itemName = itemSelect.value;
-    const comment = commentEl.value.trim();
+      const itemName = itemSelect ? itemSelect.value : 'Purchased Lineage Item';
+      const comment = commentEl ? commentEl.value.trim() : '';
 
-    if (!comment) {
-      showToast('Please enter your review comment!', 'warning');
-      return;
-    }
+      if (!comment) {
+        showToast('Please enter your review comment!', 'warning');
+        return;
+      }
 
-    storage.saveReview({
-      customerId,
-      rating: activeRatingStars,
-      itemName,
-      comment
+      storage.saveReview({
+        customerId,
+        rating: activeRatingStars,
+        itemName,
+        comment
+      });
+
+      sound.playFanfare();
+      showToast('Thank you! Your verified review has been published.', 'success');
+      prefilledItemName = '';
+      renderReviewsContent();
     });
-
-    sound.playFanfare();
-    showToast('Thank you! Your review has been published.', 'success');
-    prefilledItemName = '';
-    renderReviewsContent();
-  });
+  }
 }
 
 function escapeHtml(str) {

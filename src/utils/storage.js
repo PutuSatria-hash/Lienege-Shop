@@ -9,8 +9,15 @@ const STORAGE_KEYS = {
   CHATS: 'pl_merchant_chats_v2',
   SETTINGS: 'pl_merchant_settings_v2',
   CUSTOMER_ID: 'pl_customer_id_v2',
-  REVIEWS: 'pl_merchant_reviews_v2'
+  REVIEWS: 'pl_merchant_reviews_v2',
+  ADMIN_ACCOUNTS: 'pl_merchant_admin_accounts_v2',
+  CURRENT_ADMIN: 'pl_merchant_current_admin_v2'
 };
+
+const DEFAULT_ADMIN_ACCOUNTS = [
+  { id: 'adm-master', username: 'admin', password: 'wiseman2026', name: 'Master Wiseman', role: 'Super Admin', createdAt: '2026-10-18' },
+  { id: 'adm-boss', username: 'boss', password: 'lineage2026', name: 'Boss Satria', role: 'Owner', createdAt: '2026-10-18' }
+];
 
 const DEFAULT_SETTINGS = {
   robloxProfileUrl: 'https://www.roblox.com/users/4035030385/profile',
@@ -268,6 +275,28 @@ export const storage = {
     }
   },
 
+  getCustomerOrders() {
+    const myId = this.getCustomerId().trim();
+    return this.getOrders().filter(o => (o.customerId || '').trim() === myId);
+  },
+
+  hasAnyPurchasedOrder() {
+    return this.getCustomerOrders().length > 0;
+  },
+
+  getCustomerPurchasedItems() {
+    const customerOrders = this.getCustomerOrders();
+    const itemNames = new Set();
+    customerOrders.forEach(order => {
+      if (Array.isArray(order.items)) {
+        order.items.forEach(it => {
+          if (it.name) itemNames.add(it.name);
+        });
+      }
+    });
+    return Array.from(itemNames);
+  },
+
   // --- CHATS ---
   getAllChats() {
     try {
@@ -450,6 +479,108 @@ export const storage = {
     this.saveItems(DEFAULT_ITEMS);
     this.saveCategories(DEFAULT_CATEGORIES);
     this.saveSettings(DEFAULT_SETTINGS);
+  },
+
+  // --- MULTI-ADMIN ACCOUNTS MANAGEMENT ---
+  getAdminAccounts() {
+    try {
+      const data = localStorage.getItem(STORAGE_KEYS.ADMIN_ACCOUNTS);
+      if (!data) {
+        this.saveAdminAccounts(DEFAULT_ADMIN_ACCOUNTS);
+        return DEFAULT_ADMIN_ACCOUNTS;
+      }
+      return JSON.parse(data);
+    } catch {
+      return DEFAULT_ADMIN_ACCOUNTS;
+    }
+  },
+
+  saveAdminAccounts(accounts) {
+    localStorage.setItem(STORAGE_KEYS.ADMIN_ACCOUNTS, JSON.stringify(accounts));
+    window.dispatchEvent(new CustomEvent('pl_admin_accounts_updated', { detail: accounts }));
+  },
+
+  authenticateAdmin(username, password) {
+    const accounts = this.getAdminAccounts();
+    const cleanUser = (username || '').trim().toLowerCase();
+    const cleanPass = (password || '').trim();
+
+    const matched = accounts.find(acc => 
+      acc.username.toLowerCase() === cleanUser && acc.password === cleanPass
+    );
+
+    if (matched) {
+      this.setCurrentAdmin(matched);
+      return matched;
+    }
+
+    // Backwards compatibility with adminPin if entered in password field
+    const settings = this.getSettings();
+    if (cleanUser === 'boss' && cleanPass === (settings.adminPin || '2026')) {
+      const fallbackAcc = { id: 'adm-boss', username: 'boss', name: 'Boss Satria', role: 'Owner' };
+      this.setCurrentAdmin(fallbackAcc);
+      return fallbackAcc;
+    }
+
+    return null;
+  },
+
+  addAdminAccount({ username, password, name, role }) {
+    const cleanUser = (username || '').trim().toLowerCase();
+    if (!cleanUser || !password) {
+      throw new Error('Username and password are required!');
+    }
+    const accounts = this.getAdminAccounts();
+    if (accounts.some(a => a.username.toLowerCase() === cleanUser)) {
+      throw new Error(`Admin username "${username}" is already taken!`);
+    }
+    const newAdmin = {
+      id: `adm-${Date.now()}`,
+      username: cleanUser,
+      password: password.trim(),
+      name: name ? name.trim() : username,
+      role: role ? role.trim() : 'Staff Admin',
+      createdAt: new Date().toLocaleDateString('en-US')
+    };
+    accounts.push(newAdmin);
+    this.saveAdminAccounts(accounts);
+    return newAdmin;
+  },
+
+  deleteAdminAccount(id) {
+    let accounts = this.getAdminAccounts();
+    const target = accounts.find(a => a.id === id);
+    if (!target) return;
+    if (target.username === 'admin' || target.username === 'boss') {
+      throw new Error('Master admin accounts cannot be deleted!');
+    }
+    accounts = accounts.filter(a => a.id !== id);
+    this.saveAdminAccounts(accounts);
+  },
+
+  getCurrentAdmin() {
+    try {
+      const data = sessionStorage.getItem(STORAGE_KEYS.CURRENT_ADMIN);
+      return data ? JSON.parse(data) : null;
+    } catch {
+      return null;
+    }
+  },
+
+  setCurrentAdmin(admin) {
+    try {
+      if (admin) {
+        sessionStorage.setItem(STORAGE_KEYS.CURRENT_ADMIN, JSON.stringify(admin));
+      } else {
+        sessionStorage.removeItem(STORAGE_KEYS.CURRENT_ADMIN);
+      }
+    } catch {
+      // sessionStorage fallback
+    }
+  },
+
+  logoutAdmin() {
+    this.setCurrentAdmin(null);
   }
 };
 
