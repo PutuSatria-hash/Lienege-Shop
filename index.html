@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23130924'/><circle cx='16' cy='16' r='10' fill='%23ff7a18'/><rect x='13' y='13' width='2' height='2' fill='%23130924'/><rect x='17' y='13' width='2' height='2' fill='%23130924'/><rect x='12' y='17' width='8' height='2' fill='%23130924'/></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pixel Lineage • Wiseman Shop</title>
+    <meta name="description" content="Katalog resmi merchant game Pixel Lineage - Wiseman Shop. Beli Relic, Tome, Sigil, HeartBlood, Key, dan Weapon langka dengan Gold atau Tukar Item." />
+
+    <!-- Google Fonts: Pixelated + Clean Modern Readable Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  </head>
+  <body class="pixel-theme">
+    <!-- Dual-Buffer Ambient Pixel Scenery Layer (Seamless Crossfade) -->
+    <div id="ambient-scenery-wrap" class="ambient-scenery-wrap">
+      <div id="scenery-layer-a" class="ambient-scenery-layer"></div>
+      <div id="scenery-layer-b" class="ambient-scenery-layer"></div>
+    </div>
+    <div class="ambient-scenery-vignette"></div>
+
+    <!-- Atmospheric Background Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- CRT Scanlines Overlay (Optional Toggle) -->
+    <div id="crt-overlay" class="crt-overlay hidden"></div>
+
+    <!-- App Root Container -->
+    <div id="app"></div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
