@@ -52,6 +52,20 @@ export function initAdminModal() {
     openAdmin();
   });
 
+  window.addEventListener('pl_local_storage_status', (e) => {
+    const badge = document.getElementById('tokoku-storage-badge');
+    const text = document.getElementById('storage-status-text');
+    if (badge && text) {
+      if (e.detail && e.detail.isOnline) {
+        badge.classList.remove('cloud-mode');
+        text.textContent = 'LAPTOP DISK AKTIF (data/store_database.json)';
+      } else {
+        badge.classList.add('cloud-mode');
+        text.textContent = 'CLOUD BUFFER RELAY AKTIF';
+      }
+    }
+  });
+
   return {
     open: openAdmin,
     close: closeAdmin
@@ -179,7 +193,10 @@ function renderAdminContent() {
           <span class="font-pixel" style="color: #ffd166; font-size: 15px;">itemku</span>
           <span class="tokoku-pill-badge font-silkscreen">tokoku</span>
         </div>
-        <span class="tokoku-topbar-tag font-silkscreen">Pixel Lineage Official Merchant</span>
+        <div class="tokoku-storage-badge font-silkscreen" id="tokoku-storage-badge" title="Penyimpanan fisik laptop: data/store_database.json">
+          <span class="status-dot"></span>
+          <span id="storage-status-text">LAPTOP DISK (data/store_database.json)</span>
+        </div>
       </div>
 
       <div class="tokoku-topbar-right">

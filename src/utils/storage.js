@@ -65,11 +65,78 @@ try {
   // BroadcastChannel fallback
 }
 
-// --- SERVERLESS CLOUD RELAY STATE (VERCEL SERVERLESS API + RESTFUL BACKEND) ---
+// --- LOCAL LAPTOP DISK STORAGE SERVER & CLOUD RELAY DUAL-MODE BRIDGE ---
+const LOCAL_SERVER_HTTP = 'http://localhost:8080/api/action';
+const LOCAL_SERVER_STATE = 'http://localhost:8080/api/state';
+const LOCAL_SERVER_WS = 'ws://localhost:8080/ws';
 const DIRECT_CLOUD_URL = 'https://api.restful-api.dev/objects/ff808181a09d98f701a14ab3f8790390';
 
+let isLocalServerOnline = false;
+let localWs = null;
+
+// Connect to Local Laptop WebSocket for instant 0ms latency real-time updates
+export function initLocalWebSocket() {
+  if (typeof window === 'undefined') return;
+  try {
+    if (localWs) {
+      localWs.close();
+      localWs = null;
+    }
+    localWs = new WebSocket(LOCAL_SERVER_WS);
+
+    localWs.onopen = () => {
+      isLocalServerOnline = true;
+      window.dispatchEvent(new CustomEvent('pl_local_storage_status', { detail: { isOnline: true } }));
+      console.log('[LOCAL STORAGE] Terhubung langsung ke Local Database Laptop: data/store_database.json');
+    };
+
+    localWs.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.state) {
+          applyRemoteState(data.state);
+        }
+      } catch {
+        // Ignored
+      }
+    };
+
+    localWs.onclose = () => {
+      isLocalServerOnline = false;
+      window.dispatchEvent(new CustomEvent('pl_local_storage_status', { detail: { isOnline: false } }));
+      setTimeout(initLocalWebSocket, 5000); // Reconnect attempt
+    };
+
+    localWs.onerror = () => {
+      isLocalServerOnline = false;
+      window.dispatchEvent(new CustomEvent('pl_local_storage_status', { detail: { isOnline: false } }));
+    };
+  } catch {
+    isLocalServerOnline = false;
+  }
+}
+
+// Push to both Local Laptop Storage Server (if running) and Cloud Relay
 export async function pushToCloud(action, payload) {
   try {
+    // 1. Send immediately to Local Laptop Server (writing directly to data/store_database.json)
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 800);
+      fetch(LOCAL_SERVER_HTTP, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, payload }),
+        signal: controller.signal
+      }).then(r => {
+        clearTimeout(timeoutId);
+        if (r && r.ok) isLocalServerOnline = true;
+      }).catch(() => {});
+    } catch {
+      // Local server offline, falls back to cloud
+    }
+
+    // 2. Send to Vercel Cloud Relay (for cross-device access by other users worldwide)
     const res = await fetch('/api/sync', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -108,8 +175,98 @@ export async function pushToCloud(action, payload) {
   }
 }
 
+function applyRemoteState(state) {
+  if (!state) return;
+
+  // 1. Sync Orders
+  if (Array.isArray(state.orders) && state.orders.length > 0) {
+    const localOrders = storage.getOrders();
+    let changed = false;
+    const mergedMap = new Map();
+    localOrders.forEach(o => mergedMap.set(o.id, o));
+    state.orders.forEach(ro => {
+      const existing = mergedMap.get(ro.id);
+      if (!existing) {
+        mergedMap.set(ro.id, ro);
+        changed = true;
+      } else if (existing.status !== ro.status) {
+        mergedMap.set(ro.id, { ...existing, ...ro });
+        changed = true;
+      }
+    });
+    if (changed) {
+      const mergedList = Array.from(mergedMap.values());
+      localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(mergedList));
+      window.dispatchEvent(new CustomEvent('pl_orders_updated', { detail: mergedList }));
+    }
+  }
+
+  // 2. Sync Chats
+  if (state.chats && typeof state.chats === 'object') {
+    const localChats = storage.getAllChats();
+    let chatChanged = false;
+    Object.keys(state.chats).forEach(ticketId => {
+      const remoteMsgs = state.chats[ticketId] || [];
+      const localMsgs = localChats[ticketId] || [];
+      const localIds = new Set(localMsgs.map(m => m.id));
+      remoteMsgs.forEach(m => {
+        if (!localIds.has(m.id)) {
+          localMsgs.push(m);
+          localIds.add(m.id);
+          chatChanged = true;
+          window.dispatchEvent(new CustomEvent('pl_chat_updated', {
+            detail: { orderId: ticketId, message: m }
+          }));
+        }
+      });
+      localChats[ticketId] = localMsgs;
+    });
+    if (chatChanged) {
+      localStorage.setItem(STORAGE_KEYS.CHATS, JSON.stringify(localChats));
+    }
+  }
+
+  // 3. Sync Reviews
+  if (Array.isArray(state.reviews) && state.reviews.length > 0) {
+    const localReviews = storage.getReviews();
+    let revChanged = false;
+    const revMap = new Map();
+    localReviews.forEach(r => revMap.set(r.id, r));
+    state.reviews.forEach(rr => {
+      if (!revMap.has(rr.id)) {
+        revMap.set(rr.id, rr);
+        revChanged = true;
+      }
+    });
+    if (revChanged) {
+      const mergedReviews = Array.from(revMap.values());
+      localStorage.setItem(STORAGE_KEYS.REVIEWS, JSON.stringify(mergedReviews));
+      window.dispatchEvent(new CustomEvent('pl_reviews_updated', { detail: mergedReviews }));
+    }
+  }
+}
+
 export async function syncWithCloud() {
   try {
+    // Check local server first
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 600);
+      const localRes = await fetch(LOCAL_SERVER_STATE, { signal: controller.signal }).catch(() => null);
+      clearTimeout(timeoutId);
+      if (localRes && localRes.ok) {
+        isLocalServerOnline = true;
+        const localData = await localRes.json().catch(() => null);
+        if (localData) {
+          applyRemoteState(localData);
+          return;
+        }
+      }
+    } catch {
+      // Local server not running
+    }
+
+    // Sync with Vercel Cloud Relay
     let cloudData = null;
     const res = await fetch('/api/sync').catch(() => null);
     if (res && res.ok) {
@@ -119,73 +276,8 @@ export async function syncWithCloud() {
       if (cur && cur.data) cloudData = cur.data;
     }
 
-    if (!cloudData) return;
-
-    // 1. Sync Orders
-    if (Array.isArray(cloudData.orders) && cloudData.orders.length > 0) {
-      const localOrders = storage.getOrders();
-      let changed = false;
-      const mergedMap = new Map();
-      localOrders.forEach(o => mergedMap.set(o.id, o));
-      cloudData.orders.forEach(ro => {
-        const existing = mergedMap.get(ro.id);
-        if (!existing) {
-          mergedMap.set(ro.id, ro);
-          changed = true;
-        } else if (existing.status !== ro.status) {
-          mergedMap.set(ro.id, { ...existing, ...ro });
-          changed = true;
-        }
-      });
-      if (changed) {
-        const mergedList = Array.from(mergedMap.values());
-        localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(mergedList));
-        window.dispatchEvent(new CustomEvent('pl_orders_updated', { detail: mergedList }));
-      }
-    }
-
-    // 2. Sync Chats
-    if (cloudData.chats && typeof cloudData.chats === 'object') {
-      const localChats = storage.getAllChats();
-      let chatChanged = false;
-      Object.keys(cloudData.chats).forEach(ticketId => {
-        const remoteMsgs = cloudData.chats[ticketId] || [];
-        const localMsgs = localChats[ticketId] || [];
-        const localIds = new Set(localMsgs.map(m => m.id));
-        remoteMsgs.forEach(m => {
-          if (!localIds.has(m.id)) {
-            localMsgs.push(m);
-            localIds.add(m.id);
-            chatChanged = true;
-            window.dispatchEvent(new CustomEvent('pl_chat_updated', {
-              detail: { orderId: ticketId, message: m }
-            }));
-          }
-        });
-        localChats[ticketId] = localMsgs;
-      });
-      if (chatChanged) {
-        localStorage.setItem(STORAGE_KEYS.CHATS, JSON.stringify(localChats));
-      }
-    }
-
-    // 3. Sync Reviews
-    if (Array.isArray(cloudData.reviews) && cloudData.reviews.length > 0) {
-      const localReviews = storage.getReviews();
-      let revChanged = false;
-      const revMap = new Map();
-      localReviews.forEach(r => revMap.set(r.id, r));
-      cloudData.reviews.forEach(rr => {
-        if (!revMap.has(rr.id)) {
-          revMap.set(rr.id, rr);
-          revChanged = true;
-        }
-      });
-      if (revChanged) {
-        const mergedReviews = Array.from(revMap.values());
-        localStorage.setItem(STORAGE_KEYS.REVIEWS, JSON.stringify(mergedReviews));
-        window.dispatchEvent(new CustomEvent('pl_reviews_updated', { detail: mergedReviews }));
-      }
+    if (cloudData) {
+      applyRemoteState(cloudData);
     }
   } catch {
     // Silent catch
@@ -195,6 +287,7 @@ export async function syncWithCloud() {
 // Background polling for cross-device synchronization (every 3 seconds)
 setInterval(syncWithCloud, 3000);
 setTimeout(syncWithCloud, 300);
+setTimeout(initLocalWebSocket, 1000);
 
 export const storage = {
   // --- CUSTOMER ID (Random 9-digit e.g. Customer#805092764) ---
