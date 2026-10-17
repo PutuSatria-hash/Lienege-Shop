@@ -297,36 +297,54 @@ export function renderNavbar(container, callbacks) {
   const tabChat = container.querySelector('#tab-bottom-chat');
   const tabCart = container.querySelector('#tab-bottom-cart');
 
+  const allTabs = [tabShop, tabWishlist, tabOrders, tabChat, tabCart].filter(Boolean);
+  const setActiveTab = (activeEl) => {
+    allTabs.forEach(tab => tab.classList.remove('active'));
+    if (activeEl) activeEl.classList.add('active');
+  };
+
   if (tabShop) {
     tabShop.addEventListener('click', () => {
       sound.playClick();
+      setActiveTab(tabShop);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
   if (tabWishlist) {
     tabWishlist.addEventListener('click', () => {
       sound.playClick();
+      setActiveTab(tabWishlist);
       if (callbacks.onOpenWishlist) callbacks.onOpenWishlist();
     });
   }
   if (tabOrders) {
     tabOrders.addEventListener('click', () => {
       sound.playClick();
+      setActiveTab(tabOrders);
       if (callbacks.onOpenHistory) callbacks.onOpenHistory();
     });
   }
   if (tabChat) {
     tabChat.addEventListener('click', () => {
       sound.playClick();
+      setActiveTab(tabChat);
       if (callbacks.onOpenPublicChat) callbacks.onOpenPublicChat();
     });
   }
   if (tabCart) {
     tabCart.addEventListener('click', () => {
       sound.playClick();
+      setActiveTab(tabCart);
       if (callbacks.onOpenCart) callbacks.onOpenCart();
     });
   }
+
+  // Restore 'Toko' active highlight when any modal is closed
+  document.addEventListener('click', (e) => {
+    if (e.target.matches('.modal-close-btn') || e.target.classList.contains('modal-backdrop')) {
+      setActiveTab(tabShop);
+    }
+  });
 
   // Quick Mobile Buttons
   const btnMobCart = container.querySelector('#btn-mobile-cart-quick');

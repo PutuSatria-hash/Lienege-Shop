@@ -1663,7 +1663,7 @@ html, body {
    ========================================================================== */
 @media (max-width: 768px) {
   #app {
-    padding: 10px 10px 92px !important;
+    padding: 10px 10px calc(96px + env(safe-area-inset-bottom, 0px)) !important;
   }
 
   /* Hide Desktop Nav Row on Mobile */
@@ -1803,7 +1803,7 @@ html, body {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 56px;
+    height: calc(56px + env(safe-area-inset-bottom, 0px));
     background: rgba(14, 6, 28, 0.96);
     backdrop-filter: blur(20px);
     border-top: 1px solid rgba(255, 255, 255, 0.12);
@@ -1812,7 +1812,7 @@ html, body {
     align-items: center;
     justify-content: space-around;
     padding: 0 4px;
-    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 4px);
   }
 
   .bottom-tab-btn {
@@ -1835,14 +1835,24 @@ html, body {
   .bottom-tab-btn.active {
     color: #ffd166;
   }
+  .bottom-tab-btn.active .bottom-tab-icon {
+    transform: translateY(-2px) scale(1.15);
+    filter: drop-shadow(0 0 6px rgba(255, 209, 102, 0.7));
+  }
+  .bottom-tab-btn.active .bottom-tab-label {
+    color: #ffd166;
+    font-weight: 700;
+  }
   .bottom-tab-icon {
     font-size: 16px;
     line-height: 1;
+    transition: transform var(--trans-fast);
   }
   .bottom-tab-label {
     font-size: 8px;
     letter-spacing: 0.3px;
     text-transform: uppercase;
+    transition: color var(--trans-fast);
   }
   .bottom-tab-badge {
     position: absolute;
@@ -2056,7 +2066,7 @@ html, body {
   }
 
   .toast-msg {
-    bottom: 68px !important;
+    bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
     right: 14px !important;
     left: 14px !important;
     justify-content: center;
@@ -2879,7 +2889,7 @@ html, body {
 
 @media (max-width: 768px) {
   .npc-guide-container {
-    bottom: 68px !important;
+    bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
     left: 14px !important;
     z-index: 9985 !important;
   }
