@@ -216,6 +216,13 @@ function renderCartContent() {
       const id = btn.getAttribute('data-id');
       const item = cart.find(i => i.id === id);
       if (item) {
+        const liveItems = storage.getItems();
+        const liveItem = liveItems.find(it => it.id === id);
+        const maxStock = liveItem && typeof liveItem.stock === 'number' ? liveItem.stock : 99;
+        if (item.quantity >= maxStock) {
+          showToast(`Stok hanya tersedia ${maxStock} unit!`, 'warning');
+          return;
+        }
         storage.updateCartQuantity(id, item.quantity + 1);
         renderCartContent();
       }

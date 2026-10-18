@@ -1,6 +1,6 @@
 // Live Order & Public Inquiry Chat Messenger (100% On-Site, Auto-Reply Bot, No Leaks)
 import { sound } from '../utils/sound.js';
-import { storage } from '../utils/storage.js';
+import { storage, STORAGE_KEYS } from '../utils/storage.js';
 import { showToast } from './Toast.js';
 
 let currentActiveOrderId = null;
@@ -155,7 +155,7 @@ export function initLiveChatModal() {
   });
 
   window.addEventListener('storage', (e) => {
-    if (e.key === 'pl_merchant_chats_v2' && currentActiveOrderId) {
+    if (e.key === (STORAGE_KEYS?.CHATS || 'pl_merchant_chats_v2') && currentActiveOrderId) {
       renderMessages();
     }
   });

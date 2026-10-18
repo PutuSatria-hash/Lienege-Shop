@@ -10,12 +10,25 @@ export function createItemCard(item, onAddToCart) {
   card.id = `item-card-${item.id}`;
 
   const formattedPrice = Number(item.price || 0).toLocaleString('en-US');
-  const isAvailable = item.status !== 'Sold Out' && item.status !== 'Habis';
+  const stock = typeof item.stock === 'number' ? item.stock : 10;
+  const isAvailable = stock > 0 && item.status !== 'Sold Out' && item.status !== 'Habis';
   const inWishlist = storage.isInWishlist(item.id);
+
+  let stockBadge = '';
+  if (stock <= 0) {
+    stockBadge = `<span class="stock-badge out-stock font-silkscreen">HABIS</span>`;
+  } else if (stock <= 3) {
+    stockBadge = `<span class="stock-badge low-stock font-silkscreen">SISA ${stock}!</span>`;
+  } else {
+    stockBadge = `<span class="stock-badge in-stock font-silkscreen">STOK: ${stock}</span>`;
+  }
 
   card.innerHTML = `
     <div class="item-card-header">
-      <span class="item-category-tag">${item.category}</span>
+      <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+        <span class="item-category-tag">${item.category}</span>
+        ${stockBadge}
+      </div>
       <div style="display: flex; align-items: center; gap: 6px;">
         <span class="vault-mini-tag font-silkscreen">🟢 VAULT</span>
         <span class="rarity-badge ${item.rarity}">${item.rarity}</span>
@@ -47,7 +60,7 @@ export function createItemCard(item, onAddToCart) {
           </span>
         </div>
 
-        <button class="pixel-btn card-add-btn ${isAvailable ? '' : 'secondary'}" ${isAvailable ? '' : 'disabled'}>
+        <button class="pixel-btn card-add-btn ${isAvailable ? '' : 'secondary disabled'}" ${isAvailable ? '' : 'disabled'}>
           ${isAvailable ? '+ BUY' : 'OUT OF STOCK'}
         </button>
       </div>

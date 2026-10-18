@@ -1,9 +1,10 @@
-// Dedicated Admin Dashboard - Tokoku Merchant System
-// Theme: Pixel Lineage Dark Glassmorphism Tokoku
+// Dedicated Admin Dashboard - Wiseman Shop Merchant System
+// Theme: Pixel Lineage Dark Glassmorphism Merchant Hub
 import { sound } from '../utils/sound.js';
 import { storage } from '../utils/storage.js';
 import { showToast } from './Toast.js';
 import { openChat } from './LiveChatModal.js';
+import { HD_ICONS } from '../data/iconCatalog.js';
 
 let isAuthenticated = false;
 let activeTokokuTab = 'beranda'; // 'beranda' | 'pesanan' | 'buat-dagangan' | 'daganganku' | 'ulasan' | 'admins' | 'pengaturan'
@@ -92,6 +93,9 @@ function renderAdminContent() {
   if (!body) return;
 
   const currentAdmin = storage.getCurrentAdmin();
+  const settings = storage.getSettings();
+  const storeName = settings.storeName || 'Wiseman Shop';
+
   if (currentAdmin) {
     isAuthenticated = true;
   }
@@ -102,14 +106,14 @@ function renderAdminContent() {
       <div class="tokoku-login-wrap">
         <div class="tokoku-login-card">
           <div class="tokoku-brand" style="justify-content: center; margin-bottom: 14px;">
-            <span class="font-pixel" style="color: #ffd166; font-size: 16px;">itemku</span>
-            <span class="tokoku-pill-badge font-silkscreen">tokoku</span>
+            <span class="font-pixel" style="color: #ffd166; font-size: 16px;">WISEMAN</span>
+            <span class="tokoku-pill-badge font-silkscreen">MERCHANT</span>
           </div>
           <h4 class="font-pixel" style="font-size: 11px; color: var(--accent-orange); margin-bottom: 6px; text-align: center;">
-            PANZERFAUST STORE ACCESS
+            ${storeName.toUpperCase()} ACCESS
           </h4>
           <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; text-align: center;">
-            Masuk dengan kredensial administrator toko Anda untuk mengelola dagangan dan pesanan.
+            Masuk dengan kredensial administrator toko Anda untuk mengelola stok, dagangan, dan pesanan.
           </p>
 
           <form id="form-admin-login" style="display: flex; flex-direction: column; gap: 14px; text-align: left;">
@@ -142,7 +146,7 @@ function renderAdminContent() {
             </div>
 
             <button type="submit" class="pixel-btn gold" id="btn-submit-login" style="padding: 12px 18px; margin-top: 4px;">
-              MASUK KE TOKOKU ➔
+              MASUK KE DASHBOARD ➔
             </button>
           </form>
         </div>
@@ -190,8 +194,8 @@ function renderAdminContent() {
     <header class="tokoku-topbar">
       <div class="tokoku-topbar-left">
         <div class="tokoku-brand">
-          <span class="font-pixel" style="color: #ffd166; font-size: 15px;">itemku</span>
-          <span class="tokoku-pill-badge font-silkscreen">tokoku</span>
+          <span class="font-pixel" style="color: #ffd166; font-size: 15px;">WISEMAN</span>
+          <span class="tokoku-pill-badge font-silkscreen">HUB</span>
         </div>
         <div class="tokoku-storage-badge font-silkscreen" id="tokoku-storage-badge" title="Penyimpanan fisik laptop: data/store_database.json">
           <span class="status-dot"></span>
@@ -201,18 +205,18 @@ function renderAdminContent() {
 
       <div class="tokoku-topbar-right">
         <button class="tokoku-btn-shop font-silkscreen" id="btn-tokoku-visit-shop" title="Kembali ke Katalog Belanja">
-          Belanja di itemku ↗
+          Katalog Wiseman ↗
         </button>
 
         <div class="tokoku-user-badge">
           <div class="tokoku-user-avatar">🧙‍♂️</div>
           <div class="tokoku-user-info">
-            <span class="tokoku-user-store">PanzerFaust Store</span>
+            <span class="tokoku-user-store">${storeName}</span>
             <span class="tokoku-user-name">${adminName}</span>
           </div>
         </div>
 
-        <button class="tokoku-btn-logout font-silkscreen" id="btn-admin-logout" title="Keluar dari Tokoku">
+        <button class="tokoku-btn-logout font-silkscreen" id="btn-admin-logout" title="Keluar dari Dashboard">
           Keluar ✕
         </button>
       </div>
@@ -227,7 +231,7 @@ function renderAdminContent() {
           <div class="tokoku-store-header">
             <div class="tokoku-store-avatar">🧙</div>
             <div class="tokoku-store-meta">
-              <strong class="tokoku-store-title">PanzerFaust Store</strong>
+              <strong class="tokoku-store-title">${storeName}</strong>
               <button class="tokoku-status-toggle ${isStoreOpen ? 'open' : 'closed'}" id="btn-store-status-toggle" title="Klik untuk ubah status Toko">
                 <span class="status-dot"></span>
                 <span>${isStoreOpen ? 'Toko Buka' : 'Toko Tutup'}</span>
@@ -440,18 +444,32 @@ function renderTokokuView(stats, orders, items, categories, adminAccounts) {
 
           <!-- Keuangan Toko -->
           <section class="tokoku-section">
-            <h3 class="tokoku-section-title">Keuangan Toko</h3>
+            <h3 class="tokoku-section-title">Keuangan Toko (Gold In-Game)</h3>
             <div class="tokoku-finance-row">
               <div class="finance-card">
                 <span class="finance-label">Transaksi Berjalan</span>
-                <span class="finance-amount">Rp ${stats.transaksiBerjalan.toLocaleString('id-ID')}</span>
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" fill="#f59e0b" stroke="#fbbf24" stroke-width="1.5"/>
+                    <circle cx="12" cy="12" r="7" stroke="#d97706" stroke-width="1.2" stroke-dasharray="2 2"/>
+                    <text x="12" y="16" font-size="12" font-family="'Silkscreen', monospace" font-weight="bold" fill="#78350f" text-anchor="middle">G</text>
+                  </svg>
+                  <span class="finance-amount">${stats.transaksiBerjalan.toLocaleString()} Gold</span>
+                </div>
               </div>
               <div class="finance-card">
                 <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                  <span class="finance-label">Saldo Toko</span>
+                  <span class="finance-label">Saldo Toko Terkumpul</span>
                   <a href="javascript:void(0)" class="finance-link" id="link-finance-detail">Lihat Detail</a>
                 </div>
-                <span class="finance-amount gold">Rp ${stats.saldoGold.toLocaleString('id-ID')}</span>
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px;">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" fill="#f59e0b" stroke="#fbbf24" stroke-width="1.5"/>
+                    <circle cx="12" cy="12" r="7" stroke="#d97706" stroke-width="1.2" stroke-dasharray="2 2"/>
+                    <text x="12" y="16" font-size="12" font-family="'Silkscreen', monospace" font-weight="bold" fill="#78350f" text-anchor="middle">G</text>
+                  </svg>
+                  <span class="finance-amount gold">${stats.saldoGold.toLocaleString()} Gold</span>
+                </div>
               </div>
             </div>
           </section>
@@ -602,18 +620,18 @@ function renderTokokuView(stats, orders, items, categories, adminAccounts) {
             </div>
 
             <div class="announcement-item">
-              <a href="javascript:void(0)" class="ann-title">Informasi Mengenai Produk Kombo untuk Pengiriman Otomatis</a>
-              <span class="ann-date">16 Oct 2026 13:14</span>
+              <a href="javascript:void(0)" class="ann-title">Katalog 47 Ikon HD Pixel-Perfect 512x512 Resmi Terintegrasi</a>
+              <span class="ann-date">18 Oct 2026 11:30</span>
             </div>
 
             <div class="announcement-item">
-              <a href="javascript:void(0)" class="ann-title">Yuk, Lengkapi NIB untuk Kelancaran Jualan di itemku!</a>
-              <span class="ann-date">15 Oct 2026 17:58</span>
+              <a href="javascript:void(0)" class="ann-title">Sinkronisasi Stok Real-Time & Auto-Deduct Order Aktif</a>
+              <span class="ann-date">18 Oct 2026 11:00</span>
             </div>
 
             <div class="announcement-item">
-              <a href="javascript:void(0)" class="ann-title">Update Serverless Cloud Relay Pixel Lineage Vercel</a>
-              <span class="ann-date">18 Oct 2026 00:25</span>
+              <a href="javascript:void(0)" class="ann-title">Database Lokal Laptop data/store_database.json Berjalan Normal</a>
+              <span class="ann-date">18 Oct 2026 10:15</span>
             </div>
           </div>
         </div>
@@ -972,7 +990,20 @@ function renderTokokuView(stats, orders, items, categories, adminAccounts) {
 
             <div class="tokoku-info-banner">
               <span style="font-size: 14px;">ℹ️</span>
-              <span>Informasi dan kategori produk tidak bisa diubah setelah produk disimpan.</span>
+              <span>Informasi dan kategori produk bisa langsung disesuaikan dengan katalog game Pixel Lineage.</span>
+            </div>
+
+            <div style="margin-top: 14px;">
+              <label class="form-label font-silkscreen">Pilih dari 47 Ikon HD Wiseman (Auto-Fill Cepat)</label>
+              <select id="dagangan-icon-preset" class="pixel-input" style="cursor: pointer;">
+                <option value="">-- Pilih Ikon HD Bawaan (Opsional) --</option>
+                ${HD_ICONS.map(ic => `
+                  <option value="${ic.path}" data-name="${ic.name}" data-category="${ic.category}">${ic.name} [${ic.category}]</option>
+                `).join('')}
+              </select>
+              <span class="text-muted" style="font-size: 10px; display: block; margin-top: 4px;">
+                Memilih ikon di sini akan otomatis mengisi nama item, kategori, dan gambar produk slot utama.
+              </span>
             </div>
 
             <div style="margin-top: 16px;">
@@ -985,7 +1016,7 @@ function renderTokokuView(stats, orders, items, categories, adminAccounts) {
                 required 
               />
               <span class="text-muted" style="font-size: 10px; display: block; margin-top: 4px;">
-                Pilih nama item yang sudah disediakan, agar daganganmu dapat masuk ke dalam katalog itemku.
+                Tulis nama item atau gunakan pilihan ikon HD di atas agar serasi dalam katalog.
               </span>
             </div>
 
@@ -1024,7 +1055,7 @@ function renderTokokuView(stats, orders, items, categories, adminAccounts) {
                 </div>
               </div>
               <p class="text-muted" style="font-size: 10px; margin-top: 8px;">
-                Pastikan ukuran gambar maksimal 2MB dan berformat JPG / PNG / GIF. Dimensi yang direkomendasikan adalah 600x300 pixels.
+                Pastikan ukuran gambar maksimal 2MB dan berformat JPG / PNG / GIF. Rekomendasi: Gunakan Ikon HD 512x512 Pixel-Perfect.
               </p>
             </div>
 
@@ -1041,14 +1072,14 @@ function renderTokokuView(stats, orders, items, categories, adminAccounts) {
                 class="pixel-input form-textarea" 
                 maxlength="3000"
                 rows="4"
-                placeholder="Tulis deskripsi yang jelas dan mudah dimengerti oleh calon pembeli"
+                placeholder="Tulis deskripsi yang jelas dan spesifikasi item untuk pembeli"
               ></textarea>
             </div>
 
-            <!-- Warning Notice Banner -->
+            <!-- Info Notice Banner -->
             <div class="tokoku-warning-banner" style="margin-top: 16px;">
-              <span style="font-size: 14px;">⚠️</span>
-              <span>Jangan memberikan informasi kontak pribadi atau tautan dalam deskripsi, foto produk, foto profil, fitur Chat, dan slogan karena melanggar ketentuan layanan itemku. Ini akan mengakibatkan penonaktifan akun.</span>
+              <span style="font-size: 14px;">⚡</span>
+              <span>Pastikan deskripsi produk menjelaskan instruksi trade di dalam server Roblox Wiseman Shop.</span>
             </div>
           </div>
 
@@ -1057,9 +1088,15 @@ function renderTokokuView(stats, orders, items, categories, adminAccounts) {
             <h4 class="form-card-title">Informasi Stok dan Harga</h4>
 
             <div style="margin-top: 14px;">
-              <label class="form-label font-silkscreen">Harga Produk</label>
+              <label class="form-label font-silkscreen">Harga Produk (Gold In-Game)</label>
               <div style="display: flex; align-items: center; gap: 8px;">
-                <span class="font-silkscreen" style="color: var(--text-dim); font-size: 12px;">IDR</span>
+                <span class="font-silkscreen" style="color: var(--accent-gold); font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                    <circle cx="8" cy="8" r="7" fill="#ffd166"/>
+                    <circle cx="8" cy="8" r="5" fill="#f4a261"/>
+                    <text x="5.5" y="11" font-size="8" font-weight="bold" fill="#2b1842">G</text>
+                  </svg> Gold
+                </span>
                 <input 
                   type="number" 
                   id="dagangan-price" 
@@ -1082,17 +1119,17 @@ function renderTokokuView(stats, orders, items, categories, adminAccounts) {
             </div>
 
             <div style="margin-top: 16px;">
-              <label class="form-label font-silkscreen">Stok</label>
+              <label class="form-label font-silkscreen">Stok Tersedia</label>
               <input 
                 type="number" 
                 id="dagangan-stock" 
                 class="pixel-input" 
-                placeholder="0" 
+                placeholder="10" 
                 min="0"
                 value="10" 
                 required 
               />
-              <span class="text-muted" style="font-size: 10px; display: block; margin-top: 4px;">x1 Item =</span>
+              <span class="text-muted" style="font-size: 10px; display: block; margin-top: 4px;">Jumlah unit yang siap diperdagangkan</span>
             </div>
 
             <div style="margin-top: 16px;">
@@ -1106,7 +1143,7 @@ function renderTokokuView(stats, orders, items, categories, adminAccounts) {
                 value="1" 
                 required 
               />
-              <span class="text-muted" style="font-size: 10px; display: block; margin-top: 4px;">x1 Item =</span>
+              <span class="text-muted" style="font-size: 10px; display: block; margin-top: 4px;">Minimal pembelian per transaksi</span>
             </div>
 
             <div style="margin-top: 24px;">
@@ -1154,6 +1191,31 @@ function renderTokokuView(stats, orders, items, categories, adminAccounts) {
         });
       }
     });
+
+    // Preset HD Icon Auto-fill Handler
+    const iconPresetSelect = content.querySelector('#dagangan-icon-preset');
+    if (iconPresetSelect) {
+      iconPresetSelect.addEventListener('change', (e) => {
+        const val = e.target.value;
+        if (!val) return;
+        const opt = e.target.selectedOptions[0];
+        const name = opt.getAttribute('data-name');
+        const cat = opt.getAttribute('data-category');
+
+        if (name) content.querySelector('#dagangan-item-name').value = name;
+        if (cat) content.querySelector('#dagangan-kategori-select').value = cat;
+
+        slotImages[1] = val;
+        const prev1 = content.querySelector('#preview-slot-1');
+        const ph1 = content.querySelector('#placeholder-slot-1');
+        if (prev1 && ph1) {
+          prev1.src = val;
+          prev1.classList.remove('hidden');
+          ph1.classList.add('hidden');
+        }
+        showToast(`Ikon HD "${name}" dipilih!`, 'info');
+      });
+    }
 
     // Form Submit Handler
     const form = content.querySelector('#form-tokoku-buat-dagangan');
@@ -1293,8 +1355,8 @@ function renderTokokuView(stats, orders, items, categories, adminAccounts) {
               <tr>
                 <th style="width: 36px;"><input type="checkbox" id="check-select-all" /></th>
                 <th>Pilih produk</th>
-                <th style="width: 140px;">Harga</th>
-                <th style="width: 90px;">Stok</th>
+                <th style="width: 140px;">Harga (Gold)</th>
+                <th style="width: 210px;">Kelola Stok</th>
                 <th style="width: 110px;">Delivery</th>
                 <th style="width: 70px;">Terjual</th>
                 <th style="width: 60px; text-align: center;">Aksi</th>
@@ -1323,18 +1385,31 @@ function renderTokokuView(stats, orders, items, categories, adminAccounts) {
                       </div>
                     </td>
                     <td>
-                      <span class="font-silkscreen" style="font-size: 11px; color: var(--accent-gold);">
-                        IDR ${(it.price || 0).toLocaleString('id-ID')}
-                      </span>
+                      <div style="display: flex; align-items: center; gap: 4px;">
+                        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                          <circle cx="8" cy="8" r="7" fill="#ffd166"/>
+                          <circle cx="8" cy="8" r="5" fill="#f4a261"/>
+                          <text x="5.5" y="11" font-size="8" font-weight="bold" fill="#2b1842">G</text>
+                        </svg>
+                        <span class="font-silkscreen" style="font-size: 11px; color: var(--accent-gold);">
+                          ${(it.price || 0).toLocaleString()} Gold
+                        </span>
+                      </div>
                     </td>
                     <td>
-                      <input 
-                        type="number" 
-                        class="tokoku-inline-stock-input" 
-                        data-id="${it.id}" 
-                        value="${it.stock !== undefined ? it.stock : 10}" 
-                        min="0" 
-                      />
+                      <div class="tokoku-stock-ctrl-group">
+                        <button type="button" class="tokoku-quick-stock-btn btn-stock-minus" data-id="${it.id}" title="Kurangi 1 Stok">-</button>
+                        <input 
+                          type="number" 
+                          class="tokoku-inline-stock-input" 
+                          data-id="${it.id}" 
+                          value="${it.stock !== undefined ? it.stock : 10}" 
+                          min="0" 
+                        />
+                        <button type="button" class="tokoku-quick-stock-btn btn-stock-plus" data-id="${it.id}" title="Tambah 1 Stok">+</button>
+                        <button type="button" class="tokoku-quick-stock-btn add5 btn-stock-plus5" data-id="${it.id}" title="Tambah 5 Stok">+5</button>
+                        <button type="button" class="tokoku-quick-stock-btn zero btn-stock-zero" data-id="${it.id}" title="Set Stok Habis">Habis</button>
+                      </div>
                     </td>
                     <td>
                       <span class="font-silkscreen" style="font-size: 10px; color: #cbd5e1;">Reguler</span>
@@ -1404,14 +1479,64 @@ function renderTokokuView(stats, orders, items, categories, adminAccounts) {
     content.querySelectorAll('.tokoku-inline-stock-input').forEach(input => {
       input.addEventListener('change', (e) => {
         const id = input.getAttribute('data-id');
-        const newStock = parseInt(e.target.value, 10) || 0;
-        const currentItems = storage.getItems();
-        const updated = currentItems.map(it =>
-          it.id === id ? { ...it, stock: newStock, status: newStock > 0 ? 'In Stock' : 'Sold Out' } : it
-        );
-        storage.saveItems(updated);
+        const newStock = Math.max(0, parseInt(e.target.value, 10) || 0);
+        storage.updateItemStock(id, newStock);
         sound.playCoin();
         showToast(`Stok diperbarui menjadi ${newStock}!`, 'success');
+        renderAdminContent();
+      });
+    });
+
+    // Quick minus button
+    content.querySelectorAll('.btn-stock-minus').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-id');
+        const it = storage.getItems().find(x => x.id === id);
+        const cur = it && typeof it.stock === 'number' ? it.stock : 10;
+        const newStock = Math.max(0, cur - 1);
+        storage.updateItemStock(id, newStock);
+        sound.playClick();
+        showToast(`Stok ${it ? it.name : ''} berkurang: ${newStock}`, 'info');
+        renderAdminContent();
+      });
+    });
+
+    // Quick plus button
+    content.querySelectorAll('.btn-stock-plus').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-id');
+        const it = storage.getItems().find(x => x.id === id);
+        const cur = it && typeof it.stock === 'number' ? it.stock : 10;
+        const newStock = cur + 1;
+        storage.updateItemStock(id, newStock);
+        sound.playCoin();
+        showToast(`Stok ${it ? it.name : ''} bertambah: ${newStock}`, 'success');
+        renderAdminContent();
+      });
+    });
+
+    // Quick +5 button
+    content.querySelectorAll('.btn-stock-plus5').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-id');
+        const it = storage.getItems().find(x => x.id === id);
+        const cur = it && typeof it.stock === 'number' ? it.stock : 10;
+        const newStock = cur + 5;
+        storage.updateItemStock(id, newStock);
+        sound.playFanfare();
+        showToast(`Stok ${it ? it.name : ''} +5: ${newStock}`, 'success');
+        renderAdminContent();
+      });
+    });
+
+    // Quick Zero (Habis) button
+    content.querySelectorAll('.btn-stock-zero').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-id');
+        const it = storage.getItems().find(x => x.id === id);
+        storage.updateItemStock(id, 0);
+        sound.playRemove();
+        showToast(`Stok ${it ? it.name : ''} diset HABIS (0)`, 'warning');
         renderAdminContent();
       });
     });
@@ -1652,6 +1777,14 @@ function renderTokokuView(stats, orders, items, categories, adminAccounts) {
 
         <form id="form-tokoku-settings" class="tokoku-form-card" style="margin-top: 14px; display: flex; flex-direction: column; gap: 16px;">
           <div>
+            <label class="form-label font-silkscreen">Nama Toko Merchant</label>
+            <input type="text" id="set-store-name" class="pixel-input" value="${settings.storeName || 'Wiseman Shop'}" placeholder="e.g. Wiseman Shop" required />
+            <span class="text-muted" style="font-size: 10px; display: block; margin-top: 4px;">
+              Nama toko yang ditampilkan di header, profil admin, dan invoice pesanan.
+            </span>
+          </div>
+
+          <div>
             <label class="form-label font-silkscreen">Status Roblox Boss (Ditampilkan di Header Navbar)</label>
             <select id="set-roblox-status" class="pixel-input" style="font-family: 'Silkscreen', monospace;">
               <option value="online" ${(settings.robloxStatus || 'online') === 'online' ? 'selected' : ''}>🟢 BOSS ONLINE (Siap Trade di Dalam Game)</option>
@@ -1690,7 +1823,7 @@ function renderTokokuView(stats, orders, items, categories, adminAccounts) {
 
           <div style="margin-top: 10px;">
             <button type="submit" class="tokoku-btn-primary" style="width: 100%;">
-              Simpan Konfigurasi Tokoku
+              Simpan Konfigurasi Toko
             </button>
           </div>
         </form>
@@ -1730,7 +1863,7 @@ function renderTokokuView(stats, orders, items, categories, adminAccounts) {
               username: 'Wiseman Shop Bot',
               avatar_url: 'https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f9d9.png',
               embeds: [{
-                title: '⚡ Sinyal Uji Coba Tokoku Toko',
+                title: '⚡ Sinyal Uji Coba Wiseman Shop',
                 description: '✅ Koneksi Webhook Discord berhasil! Notifikasi pesanan dan live chat akan langsung masuk ke ponsel Boss.',
                 color: 0xff7a18,
                 timestamp: new Date().toISOString()
@@ -1754,6 +1887,7 @@ function renderTokokuView(stats, orders, items, categories, adminAccounts) {
     if (form) {
       form.addEventListener('submit', (e) => {
         e.preventDefault();
+        const storeNameInput = content.querySelector('#set-store-name').value.trim();
         const robloxStatus = content.querySelector('#set-roblox-status').value;
         const robloxUrl = content.querySelector('#set-roblox-url').value.trim();
         const waNum = content.querySelector('#set-wa-num').value.trim();
@@ -1762,6 +1896,7 @@ function renderTokokuView(stats, orders, items, categories, adminAccounts) {
 
         storage.saveSettings({
           ...settings,
+          storeName: storeNameInput || 'Wiseman Shop',
           robloxStatus: robloxStatus || 'online',
           robloxProfileUrl: robloxUrl || 'https://www.roblox.com/users/4035030385/profile',
           bossWhatsapp: waNum || '085857537354',
@@ -1770,7 +1905,8 @@ function renderTokokuView(stats, orders, items, categories, adminAccounts) {
         });
 
         sound.playFanfare();
-        showToast('Pengaturan Tokoku berhasil disimpan!', 'success');
+        showToast('Pengaturan Toko berhasil disimpan!', 'success');
+        renderAdminContent();
       });
     }
 
@@ -1806,7 +1942,7 @@ function renderTokokuView(stats, orders, items, categories, adminAccounts) {
       <div class="tokoku-view-header">
         <div>
           <h2 class="tokoku-view-title">${activeTokokuTab.toUpperCase().replace('-', ' ')}</h2>
-          <p class="tokoku-section-subtitle">Fitur modul toko itemku Tokoku Pixel Lineage.</p>
+          <p class="tokoku-section-subtitle">Fitur modul ${storeName} Pixel Lineage.</p>
         </div>
       </div>
       <div class="tokoku-form-card" style="text-align: center; padding: 40px 20px; margin-top: 20px;">
@@ -1815,7 +1951,7 @@ function renderTokokuView(stats, orders, items, categories, adminAccounts) {
           FITUR AKTIF
         </h4>
         <p style="font-size: 12px; color: var(--text-muted); max-width: 480px; margin: 0 auto;">
-          Modul ini terhubung secara real-time dengan status toko PanzerFaust. Anda dapat mengelola transaksi utama melalui menu <strong>Beranda</strong>, <strong>Riwayat Pesanan</strong>, dan <strong>Daganganku</strong>.
+          Modul ini terhubung secara real-time dengan status toko ${storeName}. Anda dapat mengelola transaksi utama melalui menu <strong>Beranda</strong>, <strong>Riwayat Pesanan</strong>, dan <strong>Daganganku</strong>.
         </p>
       </div>
     </div>

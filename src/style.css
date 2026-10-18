@@ -3132,8 +3132,8 @@ html, body {
 }
 
 /* ==========================================================================
-   ITEMKU TOKOKU MERCHANT DASHBOARD THEME
-   Pixel Lineage Dark Glassmorphism Tokoku
+   WISEMAN SHOP MERCHANT HUB DASHBOARD THEME
+   Pixel Lineage Dark Glassmorphism Merchant Hub
    ========================================================================== */
 
 /* Shell Container */
@@ -4196,15 +4196,91 @@ html, body {
   padding: 1px 4px;
   width: fit-content;
 }
-.tokoku-inline-stock-input {
-  width: 60px;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #ffd166;
-  font-family: 'Press Start 2P', monospace;
+.tokoku-stock-ctrl-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.tokoku-quick-stock-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #f8fafc;
+  font-family: 'Silkscreen', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.tokoku-quick-stock-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+.tokoku-quick-stock-btn.add5 {
+  color: var(--accent-gold);
+  border-color: rgba(255, 209, 102, 0.4);
+  background: rgba(255, 209, 102, 0.08);
+}
+.tokoku-quick-stock-btn.zero {
+  color: #ef476f;
+  border-color: rgba(239, 71, 111, 0.4);
+  background: rgba(239, 71, 111, 0.08);
   font-size: 9px;
-  padding: 4px 6px;
+}
+.tokoku-inline-stock-input {
+  width: 50px;
+  height: 24px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffd166;
+  font-family: 'Silkscreen', monospace;
+  font-size: 11px;
+  padding: 2px 4px;
   text-align: center;
+  border-radius: 2px;
+}
+.tokoku-inline-stock-input:focus {
+  outline: none;
+  border-color: var(--accent-gold);
+  background: rgba(0, 0, 0, 0.7);
+}
+
+/* Customer Facing Stock Badges */
+.stock-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 8px;
+  padding: 2px 6px;
+  border-radius: 2px;
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+.stock-badge.in-stock {
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  color: #4ade80;
+}
+.stock-badge.low-stock {
+  background: rgba(245, 158, 11, 0.18);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  color: #fbbf24;
+  animation: pulseLowStock 2s infinite ease-in-out;
+}
+.stock-badge.out-stock {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  color: #f87171;
+}
+
+@keyframes pulseLowStock {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.65; }
 }
 
 /* Empty Box */

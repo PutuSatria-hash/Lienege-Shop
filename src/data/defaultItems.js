@@ -1,194 +1,544 @@
-// Default Catalog for Pixel Lineage - Wiseman Shop (100% English)
+// Authentic Product Catalog for Pixel Lineage - Wiseman Shop
+// All items mapped directly to 47 Remastered HD 512x512 Assets
 
 export const DEFAULT_CATEGORIES = [
-  { id: 'relic', name: 'Relic', icon: '💎' },
   { id: 'tome', name: 'Tome', icon: '📖' },
-  { id: 'sigil', name: 'Sigil', icon: '🔮' },
   { id: 'heartblood', name: 'HeartBlood', icon: '🩸' },
-  { id: 'key', name: 'Key', icon: '🗝️' },
+  { id: 'heirloom', name: 'Heirloom', icon: '👑' },
+  { id: 'sigil', name: 'Sigil', icon: '🔮' },
+  { id: 'relic', name: 'Relic & Bloodline', icon: '💎' },
   { id: 'weapon', name: 'Weapon', icon: '⚔️' }
 ];
 
 export const DEFAULT_ITEMS = [
-  // --- RELIC ---
+  // =========================================================================
+  // 1. TOMES (All 2,500,000 Gold)
+  // =========================================================================
   {
-    id: 'relic-1',
-    name: "Pumpkin Lord's Core",
-    category: 'relic',
-    price: 125000,
+    id: 'tome-archon',
+    name: 'Tome of Archon',
+    category: 'tome',
+    price: 2500000,
+    stock: 15,
+    rarity: 'legendary',
+    status: 'In Stock',
+    description: 'Forbidden spellbook sealed with sacred geometric glyphs. Unleashes golden celestial judgment beams.',
+    image: '/icons/TOME%20OF%20ARCHON.png'
+  },
+  {
+    id: 'tome-aegis',
+    name: 'Tome of Aegis',
+    category: 'tome',
+    price: 2500000,
+    stock: 12,
+    rarity: 'epic',
+    status: 'In Stock',
+    description: 'Protective scripture summoning orbiting runic barrier shields that deflect incoming hostile projectiles.',
+    image: '/icons/TOME%20OF%20AEGIS.png'
+  },
+  {
+    id: 'tome-bloodreaver',
+    name: 'Tome of Bloodreaver',
+    category: 'tome',
+    price: 2500000,
+    stock: 10,
+    rarity: 'epic',
+    status: 'In Stock',
+    description: 'Ancient crimson codex. Siphons enemy life force and converts 30% of spell damage into player health.',
+    image: '/icons/TOME%20OF%20BLOODREAVER.png'
+  },
+  {
+    id: 'tome-doomcaller',
+    name: 'Tome of Doomcaller',
+    category: 'tome',
+    price: 2500000,
+    stock: 8,
+    rarity: 'legendary',
+    status: 'In Stock',
+    description: 'Apocalyptic scripture summoning abyssal void meteors that crush heavy defensive stances.',
+    image: '/icons/TOME%20OF%20DOOMCALLER.png'
+  },
+  {
+    id: 'tome-dreadcaptain',
+    name: 'Tome of Dreadcaptain',
+    category: 'tome',
+    price: 2500000,
+    stock: 7,
+    rarity: 'legendary',
+    status: 'In Stock',
+    description: 'Naval corsair grimoire commanding phantom spectral cannons and oceanic tempest winds.',
+    image: '/icons/TOME%20OF%20DREADCAPTAIN.png'
+  },
+  {
+    id: 'tome-godshot',
+    name: 'Tome of Godshot',
+    category: 'tome',
+    price: 2500000,
+    stock: 9,
+    rarity: 'legendary',
+    status: 'In Stock',
+    description: 'Sniper incantation manual for celestial archers. Guarantees 100% piercing critical hit on first strike.',
+    image: '/icons/TOME%20OF%20GODSHOT.png'
+  },
+  {
+    id: 'tome-reaper',
+    name: 'Tome of Reaper',
+    category: 'tome',
+    price: 2500000,
+    stock: 5,
+    rarity: 'mythic',
+    status: 'Limited Stock',
+    description: 'Death grimoire forged under a blood moon. Executes targets below 25% health in a blast of nether flames.',
+    image: '/icons/TOME%20OF%20REAPER.png'
+  },
+  {
+    id: 'tome-seraph',
+    name: 'Tome of Seraph',
+    category: 'tome',
+    price: 2500000,
+    stock: 6,
     rarity: 'mythic',
     status: 'In Stock',
-    description: 'Cursed burning ember from the Pumpkin King. Emits a mystical violet flame that boosts spell power by 35%.',
-    image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges"><rect width="32" height="32" fill="%23130924"/><rect x="10" y="4" width="12" height="4" fill="%232b7a35"/><rect x="14" y="2" width="4" height="4" fill="%2348b556"/><rect x="6" y="8" width="20" height="18" fill="%23ff6e14"/><rect x="8" y="10" width="16" height="14" fill="%23ff8c2e"/><rect x="10" y="12" width="4" height="4" fill="%23ffe869"/><rect x="18" y="12" width="4" height="4" fill="%23ffe869"/><rect x="12" y="18" width="8" height="4" fill="%23ffe869"/><rect x="14" y="20" width="4" height="2" fill="%23ff3a00"/></svg>'
+    description: 'Divine angelic manuscript radiating holy auras that cleanse lethal curses and heal allies.',
+    image: '/icons/TOME%20OF%20SERAPH.png'
   },
   {
-    id: 'relic-2',
-    name: 'Spectral Lantern',
-    category: 'relic',
-    price: 38000,
+    id: 'tome-shadowbreaker',
+    name: 'Tome of Shadowbreaker',
+    category: 'tome',
+    price: 2500000,
+    stock: 11,
     rarity: 'epic',
     status: 'In Stock',
-    description: 'Wanderer spirit lantern. Illuminates hidden phantoms and invisible dungeon mimics in the harvest realm.',
-    image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges"><rect width="32" height="32" fill="%23130924"/><rect x="14" y="4" width="4" height="4" fill="%239a7b56"/><rect x="10" y="8" width="12" height="3" fill="%23d6a858"/><rect x="8" y="11" width="16" height="14" fill="%231a3b45"/><rect x="11" y="13" width="10" height="10" fill="%2372f7e0"/><rect x="13" y="15" width="6" height="6" fill="%23ffffff"/><rect x="10" y="25" width="12" height="3" fill="%23d6a858"/></svg>'
+    description: 'Anti-magic manual dispelling dark illusions and shattering shadow armor barriers.',
+    image: '/icons/TOME%20OF%20SHADOWBREAKER.png'
   },
   {
-    id: 'relic-3',
-    name: 'Ancient Harvest Amulet',
-    category: 'relic',
-    price: 55000,
+    id: 'tome-shura',
+    name: 'Tome of Shura',
+    category: 'tome',
+    price: 2500000,
+    stock: 8,
     rarity: 'legendary',
-    status: 'Limited Stock',
-    description: 'Sacred relic of ancient harvest rituals. Grants 50% curse resistance and high mana regeneration.',
-    image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges"><rect width="32" height="32" fill="%23130924"/><rect x="12" y="4" width="8" height="3" fill="%23e6b422"/><rect x="8" y="7" width="16" height="3" fill="%23e6b422"/><rect x="10" y="10" width="12" height="14" fill="%239d1bbf"/><rect x="12" y="12" width="8" height="10" fill="%23c94cf2"/><rect x="14" y="14" width="4" height="6" fill="%23fce3ff"/></svg>'
+    status: 'In Stock',
+    description: 'Ferocious combat manual unleashing dual-blade berserker flurry strikes with hyper-armor.',
+    image: '/icons/TOME%20OF%20SHURA.png'
+  },
+  {
+    id: 'tome-stormhawk',
+    name: 'Tome of Stormhawk',
+    category: 'tome',
+    price: 2500000,
+    stock: 14,
+    rarity: 'epic',
+    status: 'In Stock',
+    description: 'Avian lightning manuscript calling down relentless chain-lightning bolts across the battlefield.',
+    image: '/icons/TOME%20OF%20STORMHAWK.png'
+  },
+  {
+    id: 'tome-undespited',
+    name: 'Tome of Undespited',
+    category: 'tome',
+    price: 2500000,
+    stock: 10,
+    rarity: 'epic',
+    status: 'In Stock',
+    description: 'Unstoppable willpower text preventing knockdown or displacement effects from heavy dungeon bosses.',
+    image: '/icons/TOME%20OF%20UNDESPITED.png'
+  },
+  {
+    id: 'tome-virtuose',
+    name: 'Tome of Virtuose',
+    category: 'tome',
+    price: 2500000,
+    stock: 12,
+    rarity: 'epic',
+    status: 'In Stock',
+    description: 'Maestro scripture accelerating spell cooldowns and enabling seamless arcane combo chaining.',
+    image: '/icons/TOME%20OF%20VIRTUOSE.png'
+  },
+  {
+    id: 'tome-worldcleaver',
+    name: 'Tome of Worldcleaver',
+    category: 'tome',
+    price: 2500000,
+    stock: 7,
+    rarity: 'legendary',
+    status: 'In Stock',
+    description: 'Colossal earthshaker grimoire cleaving tectonic rifts that stun and rupture groups of enemies.',
+    image: '/icons/TOME%20OF%20WORLDCLEAVER.png'
   },
 
-  // --- TOME ---
+  // =========================================================================
+  // 2. HEARTBLOODS & BLOODLINE POUCHES
+  // Asborn & Tideborn: 5,000,000 Gold | Ordinary: 2,400,000 Gold
+  // =========================================================================
   {
-    id: 'tome-1',
-    name: 'Grimoire of the Harvest Moon',
-    category: 'tome',
-    price: 92000,
-    rarity: 'legendary',
+    id: 'hb-asborn',
+    name: 'Asborn Heartblood',
+    category: 'heartblood',
+    price: 5000000,
+    stock: 6,
+    rarity: 'mythic',
     status: 'In Stock',
-    description: 'Forbidden spellbook sealed beneath lunar eclipses. Unleashes shadow reaping and spectral firestorm.',
-    image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges"><rect width="32" height="32" fill="%23130924"/><rect x="6" y="6" width="20" height="20" fill="%23531b75"/><rect x="8" y="8" width="16" height="16" fill="%238531b8"/><rect x="12" y="11" width="8" height="10" fill="%23ffd54f"/><rect x="14" y="13" width="4" height="6" fill="%23130924"/><rect x="6" y="6" width="4" height="20" fill="%23d6a858"/></svg>'
+    description: 'Burning primordial core flask. Permanently enhances flame affinity and unlocks Asborn racial passives.',
+    image: '/icons/ASBORN%20HEARTBLOOD.png'
   },
   {
-    id: 'tome-2',
-    name: 'Tome of Necrotic Flames',
-    category: 'tome',
-    price: 48000,
-    rarity: 'epic',
-    status: 'In Stock',
-    description: 'Ancient codex of abyssal purple flame. Conjures necrotic fire that burns through physical barriers.',
-    image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges"><rect width="32" height="32" fill="%23130924"/><rect x="6" y="6" width="20" height="20" fill="%232b1038"/><rect x="9" y="9" width="15" height="14" fill="%234d1c66"/><rect x="13" y="11" width="7" height="9" fill="%23b83bfa"/><rect x="15" y="13" width="3" height="5" fill="%23ffffff"/></svg>'
+    id: 'hb-tideborn',
+    name: 'Tideborn Bloodline',
+    category: 'heartblood',
+    price: 5000000,
+    stock: 5,
+    rarity: 'mythic',
+    status: 'Limited Stock',
+    description: 'Abyssal ocean lineage crest. Grants water breathing, swift aquatic mobility, and tidal surge magic.',
+    image: '/icons/TIDEBORN%20BLOODLINE.png'
   },
   {
-    id: 'tome-3',
-    name: 'Ghostly Whispers Codex',
-    category: 'tome',
-    price: 18500,
+    id: 'hb-goblin',
+    name: 'Goblin Heartblood',
+    category: 'heartblood',
+    price: 2400000,
+    stock: 15,
     rarity: 'rare',
     status: 'In Stock',
-    description: 'Collection of ethereal graveyard secrets. Deciphers riddle runes engraved on sealed crypt portals.',
-    image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges"><rect width="32" height="32" fill="%23130924"/><rect x="6" y="6" width="20" height="20" fill="%231e3d3b"/><rect x="9" y="8" width="15" height="16" fill="%232c6662"/><rect x="12" y="12" width="9" height="7" fill="%23a8fffa"/></svg>'
-  },
-
-  // --- SIGIL ---
-  {
-    id: 'sigil-1',
-    name: 'Mark of the Pumpkin King',
-    category: 'sigil',
-    price: 105000,
-    rarity: 'legendary',
-    status: 'Limited Stock',
-    description: 'Royal crest of the ruler of Halloween night. Renders wearer immune to stuns and doubles rare loot drop rates.',
-    image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges"><rect width="32" height="32" fill="%23130924"/><circle cx="16" cy="16" r="10" fill="%235a189a"/><rect x="10" y="10" width="12" height="12" fill="%23ff7a18"/><rect x="13" y="13" width="2" height="2" fill="%23130924"/><rect x="17" y="13" width="2" height="2" fill="%23130924"/><rect x="12" y="17" width="8" height="2" fill="%23130924"/></svg>'
+    description: 'Mischievous green goblin catalyst. Grants +50% loot acquisition distance and merchant barter discounts.',
+    image: '/icons/GOBLIN%20HEARTBLOOD.png'
   },
   {
-    id: 'sigil-2',
-    name: 'Blood Moon Sigil',
-    category: 'sigil',
-    price: 64000,
-    rarity: 'epic',
-    status: 'In Stock',
-    description: 'Crimson lunar glyph. Converts 15% of physical damage dealt into instant health absorption.',
-    image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges"><rect width="32" height="32" fill="%23130924"/><rect x="8" y="8" width="16" height="16" fill="%234a0404"/><rect x="10" y="10" width="12" height="12" fill="%23c91818"/><rect x="12" y="12" width="8" height="8" fill="%23ff4d4d"/><rect x="14" y="14" width="4" height="4" fill="%23ffffff"/></svg>'
-  },
-  {
-    id: 'sigil-3',
-    name: 'Shadow Stalker Rune',
-    category: 'sigil',
-    price: 26000,
+    id: 'hb-goblin-pouch',
+    name: 'Goblin Bloodline Pouch',
+    category: 'heartblood',
+    price: 2400000,
+    stock: 18,
     rarity: 'rare',
     status: 'In Stock',
-    description: 'Stealth movement glyph. Increases movement and sprint speed across dark corridors by 25%.',
-    image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges"><rect width="32" height="32" fill="%23130924"/><rect x="9" y="9" width="14" height="14" fill="%231b1429"/><rect x="11" y="11" width="10" height="10" fill="%23564082"/><rect x="13" y="7" width="6" height="18" fill="%239370db"/></svg>'
+    description: 'Sealed leather pouch containing pure goblin lineage essence. Boosts gold drop rate from dungeon mobs.',
+    image: '/icons/GOBLIN.png'
   },
-
-  // --- HEARTBLOOD ---
   {
-    id: 'blood-1',
-    name: 'Pure Vampire Heartblood',
+    id: 'hb-human-pouch',
+    name: 'Human Bloodline Pouch',
     category: 'heartblood',
-    price: 175000,
-    rarity: 'mythic',
+    price: 2400000,
+    stock: 20,
+    rarity: 'common',
     status: 'In Stock',
-    description: 'Pristine essence from the ancient vampire progenitor. Mandatory catalyst for forging god-tier weapons.',
-    image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges"><rect width="32" height="32" fill="%23130924"/><rect x="12" y="5" width="8" height="4" fill="%23a88a4d"/><rect x="10" y="9" width="12" height="17" fill="%236e0505"/><rect x="12" y="11" width="8" height="13" fill="%23d60000"/><rect x="14" y="13" width="3" height="6" fill="%23ff6666"/></svg>'
+    description: 'Standard versatile human lineage pouch. Provides balanced +15% bonus across all core physical attributes.',
+    image: '/icons/HUMAN.png'
   },
   {
-    id: 'blood-2',
-    name: 'Corrupted Beast Heartblood',
+    id: 'hb-dullhan',
+    name: 'Dullhan Heartblood',
     category: 'heartblood',
-    price: 78000,
+    price: 2400000,
+    stock: 8,
     rarity: 'legendary',
     status: 'In Stock',
-    description: 'Dense ichor harvested from dark forest behemoths. Bestows exceptional physical defense.',
-    image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges"><rect width="32" height="32" fill="%23130924"/><rect x="12" y="6" width="8" height="4" fill="%233a3a3a"/><rect x="9" y="10" width="14" height="16" fill="%233b0047"/><rect x="11" y="12" width="10" height="12" fill="%237b0094"/><rect x="13" y="14" width="4" height="5" fill="%23c724eb"/></svg>'
+    description: 'Headless knight essence bottle. Imbues attacks with necrotic decay that drains target mana.',
+    image: '/icons/DULLHAN%20HEARTBLOOD.png'
   },
   {
-    id: 'blood-3',
-    name: "Witch's Brew Blood Elixir",
+    id: 'hb-mushroom',
+    name: 'Mushroom Heartblood',
     category: 'heartblood',
-    price: 36000,
-    rarity: 'epic',
+    price: 2400000,
+    stock: 12,
+    rarity: 'rare',
     status: 'In Stock',
-    description: 'Distilled potion crafted by the marsh sorceress. Instantly heals 500 HP and purges all negative status effects.',
-    image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges"><rect width="32" height="32" fill="%23130924"/><rect x="13" y="6" width="6" height="3" fill="%23b8782a"/><rect x="10" y="9" width="12" height="16" fill="%23145417"/><rect x="12" y="12" width="8" height="11" fill="%232ae634"/><rect x="14" y="14" width="3" height="4" fill="%23b0ffb5"/></svg>'
+    description: 'Spore-infused fungi elixir. Releases toxic defensive clouds when struck and regenerates health over time.',
+    image: '/icons/MUSHROOM%20HEARTBLOD.png'
+  },
+  {
+    id: 'hb-slime',
+    name: 'Slime Heartblood',
+    category: 'heartblood',
+    price: 2400000,
+    stock: 16,
+    rarity: 'rare',
+    status: 'In Stock',
+    description: 'Viscous gelatinous elixir. Grants bouncy terrain mobility and complete immunity to fall damage.',
+    image: '/icons/SLIME%20HEAERTBLOOD.png'
   },
 
-  // --- KEY ---
+  // =========================================================================
+  // 3. HEIRLOOMS (All 10,000,000 Gold)
+  // =========================================================================
   {
-    id: 'key-1',
-    name: 'Haunted Castle Dungeon Key',
-    category: 'key',
-    price: 68000,
+    id: 'heir-celestine',
+    name: 'Celestine Heirloom',
+    category: 'heirloom',
+    price: 10000000,
+    stock: 4,
     rarity: 'legendary',
-    status: 'In Stock',
-    description: 'Gate key unlocking the Pumpkin Throne Chamber. Required to summon the Event Dungeon Boss.',
-    image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges"><rect width="32" height="32" fill="%23130924"/><rect x="10" y="6" width="12" height="10" fill="%23d6a858"/><rect x="13" y="9" width="6" height="4" fill="%23130924"/><rect x="14" y="16" width="4" height="11" fill="%23d6a858"/><rect x="18" y="21" width="4" height="3" fill="%23d6a858"/><rect x="18" y="25" width="4" height="2" fill="%23d6a858"/></svg>'
+    status: 'Limited Stock',
+    description: 'Ancient blessed crest shielding the wearer from catastrophic critical strikes and curse debuffs.',
+    image: '/icons/CELESTINE%20HEIRLOOM.png'
   },
   {
-    id: 'key-2',
-    name: 'Crypt Master Key',
-    category: 'key',
-    price: 32000,
-    rarity: 'epic',
-    status: 'In Stock',
-    description: 'Skull skeleton key granting access to underground catacombs and hidden relic coffers.',
-    image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges"><rect width="32" height="32" fill="%23130924"/><circle cx="16" cy="11" r="5" fill="%23a89fa8"/><rect x="14" y="15" width="4" height="12" fill="%23756d75"/><rect x="18" y="21" width="3" height="3" fill="%23756d75"/></svg>'
-  },
-
-  // --- WEAPON ---
-  {
-    id: 'weapon-1',
-    name: 'Scythe of the Hollow Night',
-    category: 'weapon',
-    price: 220000,
+    id: 'heir-seraph',
+    name: 'Seraph Heirloom',
+    category: 'heirloom',
+    price: 10000000,
+    stock: 3,
     rarity: 'mythic',
     status: 'Limited Stock',
-    description: 'Reaper scythe forged from abyss starlight. Each sweep tears soul rifts in a full 360-degree radius.',
-    image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges"><rect width="32" height="32" fill="%23130924"/><rect x="6" y="5" width="18" height="4" fill="%238531b8"/><rect x="20" y="9" width="6" height="6" fill="%23c94cf2"/><rect x="8" y="9" width="3" height="20" fill="%236e5338"/><rect x="9" y="10" width="2" height="18" fill="%23bfa07e"/></svg>'
+    description: 'Holy angelic talisman. Automatically resurrects fallen warrior once with 50% max HP and divine shield.',
+    image: '/icons/SERAPH%20HEIRLOOM.png'
   },
   {
-    id: 'weapon-2',
-    name: 'Pumpkin Carver Greatsword',
-    category: 'weapon',
-    price: 115000,
+    id: 'heir-slime',
+    name: 'Slime Heirloom',
+    category: 'heirloom',
+    price: 10000000,
+    stock: 5,
     rarity: 'legendary',
-    status: 'In Stock',
-    description: 'Serrated greatsword forged of solar flame steel. Unleashes explosive hellfire on critical hits.',
-    image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges"><rect width="32" height="32" fill="%23130924"/><rect x="14" y="4" width="4" height="18" fill="%23ff7a18"/><rect x="15" y="5" width="2" height="16" fill="%23ffd54f"/><rect x="10" y="22" width="12" height="3" fill="%233a1f04"/><rect x="15" y="25" width="2" height="5" fill="%23a855f7"/></svg>'
+    status: 'Limited Stock',
+    description: 'Mythical crown of the Slime Sovereign. Absorbs 40% of incoming physical blunt force and multiplies max HP.',
+    image: '/icons/SLIME%20HEIRLOOM.png'
   },
+
+  // =========================================================================
+  // 4. SIGILS (All 2,300,000 Gold)
+  // =========================================================================
   {
-    id: 'weapon-3',
-    name: 'Phantom Edge Dagger',
-    category: 'weapon',
-    price: 52000,
+    id: 'sigil-aegis',
+    name: 'Sigil of Aegis',
+    category: 'sigil',
+    price: 2300000,
+    stock: 14,
     rarity: 'epic',
     status: 'In Stock',
-    description: 'Translucent shadow assassin blade. Ignores 30% of monster armor and lands deadly backstabs.',
-    image: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges"><rect width="32" height="32" fill="%23130924"/><rect x="14" y="6" width="4" height="15" fill="%2348bfe3"/><rect x="15" y="7" width="2" height="13" fill="%23ffffff"/><rect x="11" y="21" width="10" height="2" fill="%235c4d7d"/><rect x="15" y="23" width="2" height="5" fill="%232b213a"/></svg>'
+    description: 'Golden shield medallion. Increases passive defense by 40% and absorbs 250 damage every 15 seconds.',
+    image: '/icons/SIGIL%20OF%20AEGIS.png'
+  },
+  {
+    id: 'sigil-banshee',
+    name: 'Sigil of Banshee',
+    category: 'sigil',
+    price: 2300000,
+    stock: 9,
+    rarity: 'epic',
+    status: 'In Stock',
+    description: 'Haunting spirit crest. Releases ear-piercing sonic screams that disorient and silence enemy casters.',
+    image: '/icons/SIGIL%20OF%20BANSHEE.png'
+  },
+  {
+    id: 'sigil-beastlord',
+    name: 'Sigil of Beastlord',
+    category: 'sigil',
+    price: 2300000,
+    stock: 8,
+    rarity: 'legendary',
+    status: 'In Stock',
+    description: 'Primal beast crest. Boosts raw melee attack speed by 30% and empowers ferocious claw strikes.',
+    image: '/icons/SIGIL%20OF%20BEASTLORD.png'
+  },
+  {
+    id: 'sigil-doomcaller',
+    name: 'Sigil of Doomcaller',
+    category: 'sigil',
+    price: 2300000,
+    stock: 7,
+    rarity: 'legendary',
+    status: 'In Stock',
+    description: 'Dark obsidian sigil that inflicts lingering shadow burn upon any enemy hitting the wearer.',
+    image: '/icons/SIGIL%20OF%20DOOMCALLER.png'
+  },
+  {
+    id: 'sigil-dreadcaptain',
+    name: 'Sigil of Dreadcaptain',
+    category: 'sigil',
+    price: 2300000,
+    stock: 8,
+    rarity: 'legendary',
+    status: 'In Stock',
+    description: 'Weathered pirate emblem. Grants critical strike bonuses and temporary immunity to crowd control.',
+    image: '/icons/SIGIL%20OF%20DREADCAPTAIN.png'
+  },
+  {
+    id: 'sigil-reaper',
+    name: 'Sigil of Reaper',
+    category: 'sigil',
+    price: 2300000,
+    stock: 6,
+    rarity: 'mythic',
+    status: 'Limited Stock',
+    description: 'Obsidian token bearing purple scythe mark. Slain monsters drop double souls and rare crafting mats.',
+    image: '/icons/SIGIL%20OF%20REAPER.png'
+  },
+  {
+    id: 'sigil-seraph',
+    name: 'Sigil of Seraph',
+    category: 'sigil',
+    price: 2300000,
+    stock: 5,
+    rarity: 'mythic',
+    status: 'Limited Stock',
+    description: 'Six-winged holy crest. Emits a continuous radiant aura that blinds encroaching demon foes.',
+    image: '/icons/SIGIL%20OF%20SERAPH.png'
+  },
+  {
+    id: 'sigil-shadowbreaker',
+    name: 'Sigil of Shadowbreaker',
+    category: 'sigil',
+    price: 2300000,
+    stock: 10,
+    rarity: 'epic',
+    status: 'In Stock',
+    description: 'Radiant silver talisman. Penetrates 35% of enemy magic resistance with holy light bursts.',
+    image: '/icons/SIGIL%20OF%20SHADOWBREAKER.png'
+  },
+  {
+    id: 'sigil-shura',
+    name: 'Sigil of Shura',
+    category: 'sigil',
+    price: 2300000,
+    stock: 7,
+    rarity: 'legendary',
+    status: 'In Stock',
+    description: 'War god medallion. Grants stacking attack power each time damage is taken in prolonged combat.',
+    image: '/icons/SIGIL%20OF%20SHURA.png'
+  },
+  {
+    id: 'sigil-songweaver',
+    name: 'Sigil of Songweaver',
+    category: 'sigil',
+    price: 2300000,
+    stock: 11,
+    rarity: 'epic',
+    status: 'In Stock',
+    description: 'Harmonic melody badge. Regenerates party member stamina and mana at an accelerated rate.',
+    image: '/icons/SIGIL%20OF%20SONGWEAVER.png'
+  },
+  {
+    id: 'sigil-stormhawk',
+    name: 'Sigil of Stormhawk',
+    category: 'sigil',
+    price: 2300000,
+    stock: 12,
+    rarity: 'rare',
+    status: 'In Stock',
+    description: 'Feathered lightning insignia. Grants rapid dash teleportation with trailing electrical shockwaves.',
+    image: '/icons/SIGIL%20OF%20STORMHAWK.png'
+  },
+  {
+    id: 'sigil-tracendent',
+    name: 'Sigil of Tracendent',
+    category: 'sigil',
+    price: 2300000,
+    stock: 4,
+    rarity: 'mythic',
+    status: 'Limited Stock',
+    description: 'Enlightened cosmic rune. Unlocks the seventh chakra, elevating all skill ranks by +2 levels.',
+    image: '/icons/SIGIL%20OF%20TRACENDENT.png'
+  },
+  {
+    id: 'sigil-undespited',
+    name: 'Sigil of Undespited',
+    category: 'sigil',
+    price: 2300000,
+    stock: 9,
+    rarity: 'epic',
+    status: 'In Stock',
+    description: 'Unyielding titanium crest. Reduces physical stun duration by 60% and increases armor tenacity.',
+    image: '/icons/SIGIL%20OF%20UNDESPITED.png'
+  },
+  {
+    id: 'sigil-virtuosi',
+    name: 'Sigil of Virtuosi',
+    category: 'sigil',
+    price: 2300000,
+    stock: 11,
+    rarity: 'epic',
+    status: 'In Stock',
+    description: 'Precision artisan insignia. Grants 100% weapon stability and eliminates spellcasting interruptions.',
+    image: '/icons/SIGIL%20OF%20VIRTUOSI.png'
+  },
+  {
+    id: 'sigil-worldcleaver',
+    name: 'Sigil of Worldcleaver',
+    category: 'sigil',
+    price: 2300000,
+    stock: 8,
+    rarity: 'legendary',
+    status: 'In Stock',
+    description: 'Shattered continent symbol. Converts 20% of all outgoing attack damage into armor-piercing true damage.',
+    image: '/icons/SIGIL%20OF%20WORLDCLEAVER.png'
+  },
+
+  // =========================================================================
+  // 5. RELICS & BLOODLINES
+  // =========================================================================
+  {
+    id: 'relic-vesper',
+    name: 'Vesper Bloodline',
+    category: 'relic',
+    price: 3500000,
+    stock: 6,
+    rarity: 'mythic',
+    status: 'In Stock',
+    description: 'Noble lineage bloodline marked with lunar crescent. Grants dark magic amplification and silent step.',
+    image: '/icons/VESPER%20BLOODLINE.png'
+  },
+  {
+    id: 'relic-stonekin',
+    name: 'Stonekin Bloodline',
+    category: 'relic',
+    price: 3500000,
+    stock: 8,
+    rarity: 'legendary',
+    status: 'In Stock',
+    description: 'Ancestral diamond-heart crest. Bestows immense physical hyper-armor against dungeon boss stuns.',
+    image: '/icons/STONEKIN%20BLOODLINE.png'
+  },
+  {
+    id: 'relic-sylvan',
+    name: 'Sylvan Bloodline',
+    category: 'relic',
+    price: 3500000,
+    stock: 7,
+    rarity: 'legendary',
+    status: 'In Stock',
+    description: 'Ancient elven woodland lineage. Enhances nature spell potency and accelerates running speed in dungeons.',
+    image: '/icons/SYLVAN%20BLOODLINE.png'
+  },
+  {
+    id: 'relic-soul-essence',
+    name: 'Soul Essence',
+    category: 'relic',
+    price: 1200000,
+    stock: 24,
+    rarity: 'epic',
+    status: 'In Stock',
+    description: 'Ethereal flask brimming with glowing soul mist. Mandatory catalyst for enchanting high-tier equipment.',
+    image: '/icons/SOUL%20ESSENCE.png'
+  },
+  {
+    id: 'relic-eye-of-hollow',
+    name: 'Eye of Hollow',
+    category: 'relic',
+    price: 4500000,
+    stock: 3,
+    rarity: 'mythic',
+    status: 'Limited Stock',
+    description: 'Sentient abyss talisman. Reveals hidden dungeon pathways and grants true-sight over invisible foes.',
+    image: '/icons/EYE%20OF%20HOLLOW.png'
+  },
+
+  // =========================================================================
+  // 6. WEAPONS
+  // =========================================================================
+  {
+    id: 'weapon-fatebrand',
+    name: 'Fatebrand',
+    category: 'weapon',
+    price: 8500000,
+    stock: 3,
+    rarity: 'mythic',
+    status: 'Limited Stock',
+    description: 'Legendary wand staff crowned with solar ember crystal. Channels devastating continuous beam lasers.',
+    image: '/icons/FATEBRAND.png'
   }
 ];

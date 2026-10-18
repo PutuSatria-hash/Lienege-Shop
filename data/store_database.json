@@ -3,7 +3,7 @@
   "updatedAt": "2026-10-17T17:03:16.027Z",
   "storeStatus": {
     "isOpen": true,
-    "name": "PanzerFaust Store"
+    "name": "Wiseman Shop"
   },
   "orders": [
     {
@@ -25,7 +25,7 @@
       "id": "rev-1",
       "customerId": "Customer#384910248",
       "rating": 5,
-      "itemName": "Spectral Lantern",
+      "itemName": "Tome of Archon",
       "comment": "Super fast trade in-game! Boss Wiseman is legit and very friendly.",
       "date": "10/16/2026"
     },
@@ -33,7 +33,7 @@
       "id": "rev-2",
       "customerId": "Customer#912048591",
       "rating": 5,
-      "itemName": "Pumpkin Lord's Core",
+      "itemName": "Asborn Heartblood",
       "comment": "Item arrived within 3 minutes of ordering. Best price across all Lineage merchants!",
       "date": "10/17/2026"
     }

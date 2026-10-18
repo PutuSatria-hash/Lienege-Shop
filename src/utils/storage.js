@@ -1,19 +1,42 @@
 import { DEFAULT_CATEGORIES, DEFAULT_ITEMS } from '../data/defaultItems.js';
 
-const STORAGE_KEYS = {
-  ITEMS: 'pl_merchant_items_v2',
-  CATEGORIES: 'pl_merchant_categories_v2',
-  CART: 'pl_merchant_cart_v2',
-  WISHLIST: 'pl_merchant_wishlist_v2',
+export const STORAGE_KEYS = {
+  ITEMS: 'pl_merchant_items_v3',
+  CATEGORIES: 'pl_merchant_categories_v3',
+  CART: 'pl_merchant_cart_v3',
+  WISHLIST: 'pl_merchant_wishlist_v3',
   ORDERS: 'pl_merchant_orders_v2',
   CHATS: 'pl_merchant_chats_v2',
-  SETTINGS: 'pl_merchant_settings_v2',
+  SETTINGS: 'pl_merchant_settings_v3',
   CUSTOMER_ID: 'pl_customer_id_v2',
-  REVIEWS: 'pl_merchant_reviews_v2',
-  ADMIN_ACCOUNTS: 'pl_merchant_admin_accounts_v2',
-  CURRENT_ADMIN: 'pl_merchant_current_admin_v2',
-  STORE_STATUS: 'pl_merchant_store_open_v2'
+  REVIEWS: 'pl_merchant_reviews_v3',
+  ADMIN_ACCOUNTS: 'pl_merchant_admin_accounts_v3',
+  CURRENT_ADMIN: 'pl_merchant_current_admin_v3',
+  STORE_STATUS: 'pl_merchant_store_open_v3'
 };
+
+// Automatic cleanup for obsolete cached versions from previous iterations
+try {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    const legacyKeys = [
+      'pl_merchant_items_v2',
+      'pl_merchant_categories_v2',
+      'pl_merchant_items',
+      'pl_merchant_categories',
+      'pl_merchant_cart',
+      'pl_merchant_wishlist'
+    ];
+    legacyKeys.forEach(k => {
+      try {
+        if (localStorage.getItem(k) !== null) {
+          localStorage.removeItem(k);
+        }
+      } catch {}
+    });
+  }
+} catch {
+  // Silent fallback
+}
 
 const DEFAULT_ADMIN_ACCOUNTS = [
   { id: 'adm-master', username: 'admin', password: 'wiseman2026', name: 'Master Wiseman', role: 'Super Admin', createdAt: '2026-10-18' },
@@ -21,6 +44,7 @@ const DEFAULT_ADMIN_ACCOUNTS = [
 ];
 
 const DEFAULT_SETTINGS = {
+  storeName: 'Wiseman Shop',
   robloxProfileUrl: 'https://www.roblox.com/users/4035030385/profile',
   robloxUsername: 'WisemanBoss',
   robloxStatus: 'online', // 'online' | 'trading' | 'offline'
@@ -35,7 +59,7 @@ const DEFAULT_REVIEWS = [
     id: 'rev-1',
     customerId: 'Customer#384910248',
     rating: 5,
-    itemName: 'Spectral Lantern',
+    itemName: 'Tome of Archon',
     comment: 'Super fast trade in-game! Boss Wiseman is legit and very friendly.',
     date: '10/16/2026'
   },
@@ -43,7 +67,7 @@ const DEFAULT_REVIEWS = [
     id: 'rev-2',
     customerId: 'Customer#912048591',
     rating: 5,
-    itemName: "Pumpkin Lord's Core",
+    itemName: 'Asborn Heartblood',
     comment: 'Item arrived within 3 minutes of ordering. Best price across all Lineage merchants!',
     date: '10/17/2026'
   },
@@ -51,7 +75,7 @@ const DEFAULT_REVIEWS = [
     id: 'rev-3',
     customerId: 'Customer#159755970',
     rating: 5,
-    itemName: 'Grimoire of the Harvest Moon',
+    itemName: 'Celestine Heirloom',
     comment: 'Traded with barter method and Boss accepted smoothly. 10/10 recommended!',
     date: '10/17/2026'
   }
@@ -315,11 +339,62 @@ export const storage = {
   getItems() {
     try {
       const data = localStorage.getItem(STORAGE_KEYS.ITEMS);
-      if (!data) {
-        this.saveItems(DEFAULT_ITEMS);
-        return DEFAULT_ITEMS;
+      let items = data ? JSON.parse(data) : DEFAULT_ITEMS;
+      let changed = false;
+
+      // 1. Remove dummy items not in authentic Lineage catalogue
+      const defaultNames = new Set(DEFAULT_ITEMS.map(it => (it.name || '').toLowerCase()));
+      const isDummy = (it) => {
+        if (!it || !it.name) return true;
+        const n = it.name.toLowerCase();
+        if (n.includes('crypt master') || n.includes('haunted castle') || n.includes('crypt') || n.includes('haunted')) return true;
+        if (n.includes('pumpkin') || n.includes('spectral') || n.includes('harvest')) return true;
+        if (it.category === 'key') return true;
+        if (it.image && typeof it.image === 'string' && it.image.startsWith('data:image/svg')) return true;
+        // If an item has an old dummy id and is not part of default items
+        if (!defaultNames.has(n) && (it.id && (it.id.startsWith('item-') || it.id.startsWith('relic-item') || it.id.startsWith('dummy-')))) return true;
+        return false;
+      };
+
+      const prevCount = items.length;
+      items = items.filter(it => !isDummy(it));
+      if (items.length !== prevCount) {
+        changed = true;
       }
-      return JSON.parse(data);
+
+      // 2. Synchronize prices and ensure all items from DEFAULT_ITEMS exist
+      const defaultMap = new Map(DEFAULT_ITEMS.map(it => [it.name.toLowerCase(), it]));
+      
+      // Update existing item prices to match Boss's pricing rules
+      items = items.map(it => {
+        const def = defaultMap.get((it.name || '').toLowerCase());
+        if (def) {
+          if (it.price !== def.price || it.category !== def.category || it.image !== def.image) {
+            changed = true;
+            it = { ...it, price: def.price, category: def.category, image: def.image };
+          }
+        }
+        if (it.stock === undefined || isNaN(it.stock)) {
+          changed = true;
+          const s = it.status === 'Sold Out' || it.status === 'Habis' ? 0 : 10;
+          it = { ...it, stock: s };
+        }
+        return it;
+      });
+
+      // Add missing default items if any
+      const existingNames = new Set(items.map(it => (it.name || '').toLowerCase()));
+      DEFAULT_ITEMS.forEach(def => {
+        if (!existingNames.has(def.name.toLowerCase())) {
+          items.push({ ...def });
+          changed = true;
+        }
+      });
+
+      if (changed || !data) {
+        this.saveItems(items);
+      }
+      return items;
     } catch {
       return DEFAULT_ITEMS;
     }
@@ -332,9 +407,12 @@ export const storage = {
 
   addItem(newItem) {
     const items = this.getItems();
+    const stock = Math.max(0, parseInt(newItem.stock, 10) || 10);
     const itemWithId = {
       ...newItem,
-      id: newItem.id || `item-${Date.now()}`
+      id: newItem.id || `item-${Date.now()}`,
+      stock,
+      status: stock > 0 ? (stock <= 3 ? 'Limited Stock' : 'In Stock') : 'Sold Out'
     };
     items.unshift(itemWithId);
     this.saveItems(items);
@@ -342,10 +420,33 @@ export const storage = {
   },
 
   updateItem(updatedItem) {
+    const stock = Math.max(0, parseInt(updatedItem.stock, 10) || 0);
+    const itemWithStock = {
+      ...updatedItem,
+      stock,
+      status: stock > 0 ? (stock <= 3 ? 'Limited Stock' : 'In Stock') : 'Sold Out'
+    };
     const items = this.getItems().map(item =>
-      item.id === updatedItem.id ? updatedItem : item
+      item.id === updatedItem.id ? itemWithStock : item
     );
     this.saveItems(items);
+  },
+
+  updateItemStock(id, newStock) {
+    const stock = Math.max(0, parseInt(newStock, 10) || 0);
+    const items = this.getItems().map(it => {
+      if (it.id === id) {
+        return {
+          ...it,
+          stock,
+          status: stock > 0 ? (stock <= 3 ? 'Limited Stock' : 'In Stock') : 'Sold Out'
+        };
+      }
+      return it;
+    });
+    this.saveItems(items);
+    pushToCloud('update_stock', { itemId: id, stock });
+    return items.find(it => it.id === id);
   },
 
   deleteItem(id) {
@@ -357,11 +458,16 @@ export const storage = {
   getCategories() {
     try {
       const data = localStorage.getItem(STORAGE_KEYS.CATEGORIES);
-      if (!data) {
-        this.saveCategories(DEFAULT_CATEGORIES);
-        return DEFAULT_CATEGORIES;
+      let categories = data ? JSON.parse(data) : DEFAULT_CATEGORIES;
+      // Filter out dummy 'key' category and ensure 'heirloom' exists
+      const cleanCategories = categories.filter(c => c.id !== 'key');
+      if (!cleanCategories.some(c => c.id === 'heirloom')) {
+        cleanCategories.splice(2, 0, { id: 'heirloom', name: 'Heirloom', icon: '👑' });
       }
-      return JSON.parse(data);
+      if (cleanCategories.length !== categories.length || !data) {
+        this.saveCategories(cleanCategories);
+      }
+      return cleanCategories;
     } catch {
       return DEFAULT_CATEGORIES;
     }
@@ -400,12 +506,20 @@ export const storage = {
   },
 
   addToCart(item, quantity = 1) {
+    const currentItems = this.getItems();
+    const liveItem = currentItems.find(i => i.id === item.id) || item;
+    const maxStock = typeof liveItem.stock === 'number' ? liveItem.stock : 10;
+    
+    if (maxStock <= 0) {
+      throw new Error('Item ini sedang habis stok!');
+    }
+
     const cart = this.getCart();
     const existing = cart.find(i => i.id === item.id);
     if (existing) {
-      existing.quantity += quantity;
+      existing.quantity = Math.min(maxStock, existing.quantity + quantity);
     } else {
-      cart.push({ ...item, quantity });
+      cart.push({ ...item, quantity: Math.min(maxStock, quantity) });
     }
     this.saveCart(cart);
   },
@@ -415,8 +529,14 @@ export const storage = {
     if (quantity <= 0) {
       cart = cart.filter(i => i.id !== itemId);
     } else {
-      const target = cart.find(i => i.id === itemId);
-      if (target) target.quantity = quantity;
+      const currentItems = this.getItems();
+      const liveItem = currentItems.find(i => i.id === itemId);
+      const maxStock = liveItem && typeof liveItem.stock === 'number' ? liveItem.stock : 999;
+      const clampedQty = Math.min(maxStock, quantity);
+
+      cart = cart.map(i =>
+        i.id === itemId ? { ...i, quantity: clampedQty } : i
+      );
     }
     this.saveCart(cart);
   },
@@ -478,6 +598,26 @@ export const storage = {
     window.dispatchEvent(new CustomEvent('pl_orders_updated', { detail: orders }));
     if (chatChannel) {
       chatChannel.postMessage({ type: 'order_created', order });
+    }
+
+    // Auto decrement item stock
+    if (Array.isArray(order.items) && order.items.length > 0) {
+      const items = this.getItems();
+      let changed = false;
+      order.items.forEach(ordered => {
+        const item = items.find(it => it.id === ordered.id || it.name === ordered.name);
+        if (item) {
+          const cur = typeof item.stock === 'number' ? item.stock : 10;
+          const qty = Number(ordered.quantity) || 1;
+          const newStock = Math.max(0, cur - qty);
+          item.stock = newStock;
+          item.status = newStock > 0 ? (newStock <= 3 ? 'Limited Stock' : 'In Stock') : 'Sold Out';
+          changed = true;
+        }
+      });
+      if (changed) {
+        this.saveItems(items);
+      }
     }
 
     // Push to serverless cloud relay
@@ -552,6 +692,26 @@ export const storage = {
     order.cancelReason = reason;
     localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(orders));
     window.dispatchEvent(new CustomEvent('pl_orders_updated', { detail: orders }));
+
+    // Restore stock if previously deducted
+    if (Array.isArray(order.items) && order.items.length > 0) {
+      const items = this.getItems();
+      let changed = false;
+      order.items.forEach(ordered => {
+        const item = items.find(it => it.id === ordered.id || it.name === ordered.name);
+        if (item) {
+          const cur = typeof item.stock === 'number' ? item.stock : 0;
+          const qty = Number(ordered.quantity) || 1;
+          const newStock = cur + qty;
+          item.stock = newStock;
+          item.status = newStock > 0 ? (newStock <= 3 ? 'Limited Stock' : 'In Stock') : 'Sold Out';
+          changed = true;
+        }
+      });
+      if (changed) {
+        this.saveItems(items);
+      }
+    }
 
     if (chatChannel) {
       chatChannel.postMessage({ type: 'order_status_updated', orderId, newStatus: 'Cancelled' });

@@ -93,7 +93,7 @@ async function sendDiscordAlert(title, description, fields = []) {
 const DEFAULT_STATE = {
   version: '3.0.0',
   updatedAt: new Date().toISOString(),
-  storeStatus: { isOpen: true, name: 'PanzerFaust Store' },
+  storeStatus: { isOpen: true, name: 'Wiseman Shop' },
   orders: [],
   chats: {},
   reviews: [
@@ -271,6 +271,16 @@ const server = http.createServer((req, res) => {
             writeLog(`[ULASAN BARU MASUK KE LAPTOP]: ${payload.rating} Bintang dari ${payload.customerId}`);
             sendWindowsToast('⭐ Ulasan Pembeli Baru!', `${payload.rating} Bintang dari ${payload.customerId} untuk item ${payload.itemName}`);
           }
+        } else if (action === 'update_stock' && payload) {
+          if (!localDbState.items) localDbState.items = [];
+          const it = localDbState.items.find(i => i.id === payload.itemId);
+          if (it) {
+            it.stock = payload.stock;
+          } else {
+            localDbState.items.push({ id: payload.itemId, stock: payload.stock });
+          }
+          modified = true;
+          writeLog(`[STOK DIUBAH DI LAPTOP]: Item #${payload.itemId} -> ${payload.stock}`);
         }
 
         if (modified) {

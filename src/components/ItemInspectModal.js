@@ -34,7 +34,8 @@ export function openItemInspect(item) {
 
   const formattedPrice = Number(item.price || 0).toLocaleString('en-US');
   const inWishlist = storage.isInWishlist(item.id);
-  const isAvailable = item.status !== 'Sold Out' && item.status !== 'Habis';
+  const stock = typeof item.stock === 'number' ? item.stock : 10;
+  const isAvailable = stock > 0 && item.status !== 'Sold Out' && item.status !== 'Habis';
   const settings = storage.getSettings();
 
   // Procedural RPG stats & lore flavor
@@ -61,7 +62,7 @@ export function openItemInspect(item) {
             <div class="tilt-glare" id="tilt-glare"></div>
             <div class="tilt-badge-row">
               <span class="rarity-badge ${item.rarity}">${item.rarity}</span>
-              <span class="vault-status-pill font-silkscreen">🟢 IN VAULT</span>
+              <span class="vault-status-pill font-silkscreen">${stock > 0 ? '🟢 IN VAULT' : '🔴 OUT OF STOCK'}</span>
             </div>
             
             <div class="tilt-img-wrap">
@@ -85,8 +86,10 @@ export function openItemInspect(item) {
               </div>
             </div>
             <div class="trade-rating-box">
-              <span class="inspect-lbl font-silkscreen">TRADE TIER</span>
-              <span class="trade-tier-tag font-pixel">TIER S ★★★</span>
+              <span class="inspect-lbl font-silkscreen">STOCK AVAILABLE</span>
+              <span class="trade-tier-tag font-pixel" style="color: ${stock > 0 ? (stock <= 3 ? '#fbbf24' : '#34d399') : '#f87171'}; border-color: ${stock > 0 ? (stock <= 3 ? '#fbbf24' : '#34d399') : '#f87171'};">
+                ${stock > 0 ? `${stock} PCS` : 'HABIS'}
+              </span>
             </div>
           </div>
 
@@ -100,6 +103,12 @@ export function openItemInspect(item) {
           <div class="inspect-section">
             <h4 class="inspect-section-title font-pixel">⚡ ITEM SPECIFICATIONS</h4>
             <div class="inspect-specs-grid font-silkscreen">
+              <div class="spec-row">
+                <span class="spec-k">Stock Remaining:</span>
+                <span class="spec-v" style="color: ${stock > 0 ? (stock <= 3 ? '#fbbf24' : '#34d399') : '#f87171'}; font-weight: bold;">
+                  ${stock > 0 ? `${stock} Units Available` : 'OUT OF STOCK (HABIS)'}
+                </span>
+              </div>
               <div class="spec-row">
                 <span class="spec-k">Trade Type:</span>
                 <span class="spec-v">Gold / In-Game Barter</span>
@@ -121,7 +130,7 @@ export function openItemInspect(item) {
 
           <!-- Action Buttons -->
           <div class="inspect-actions">
-            <button class="pixel-btn inspect-buy-btn" id="btn-inspect-buy" ${isAvailable ? '' : 'disabled'}>
+            <button class="pixel-btn inspect-buy-btn ${isAvailable ? '' : 'disabled'}" id="btn-inspect-buy" ${isAvailable ? '' : 'disabled'}>
               ${isAvailable ? '🛒 ADD TO CART' : 'OUT OF STOCK'}
             </button>
             <button class="pixel-btn secondary inspect-wish-btn" id="btn-inspect-wish">
